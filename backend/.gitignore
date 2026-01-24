@@ -1,0 +1,27 @@
+# Node dependencies
+node_modules/
+
+# Environment files
+.env
+
+# Database dumps
+dump.rdb
+
+# Python virtual environment
+api/venv/
+
+# Python cache files
+api/__pycache__/
+
+# Trained models and large datasets
+api/model/multi_cancer/
+api/model/*.h5
+api/model/*.pt
+api/model/*.pkl
+
+# MacOS files
+.DS_Store
+
+# Build folders
+dist/
+build/

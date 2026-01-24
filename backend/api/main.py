@@ -1,0 +1,92 @@
+from fastapi import UploadFile, File
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+import keras
+import numpy as np
+from PIL import Image
+import io
+from tensorflow.keras.applications.resnet50 import preprocess_input
+
+app = FastAPI()
+
+origins = [
+    "http://localhost:5173",
+    # add other origins if needed
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,        
+    allow_credentials=True,
+    allow_methods=["*"],        
+    allow_headers=["*"],        
+)
+
+class_names = ['brain_glioma', 'brain_menin', 'brain_no_tumor', 'brain_tumor', 'breast_benign', 'breast_malignant', 'cervix_dyk', 'cervix_koc', 'cervix_mep', 'cervix_pab', 'colon_aca', 'colon_bnt', 'kidney_normal', 'kidney_tumor', 'lung_aca', 'lung_bnt', 'lung_scc']
+
+class_descriptions = {
+    "brain_glioma": "Tumor from supportive glial cells in the brain; can be benign or malignant. (brain_glioma)",
+    "brain_menin": "Meningioma — usually benign tumor of the protective membranes around the brain. (brain_menin)",
+    "brain_no_tumor": "Normal brain tissue with no detectable tumor or abnormal growth. (brain_no_tumor)",
+    "brain_tumor": "General brain tumor — abnormal cell growth in brain tissue. (brain_tumor)",
+    "breast_benign": "Non‑cancerous breast tumor that does not invade surrounding tissue. (breast_benign)",
+    "breast_malignant": "Cancerous breast tumor that can invade nearby tissue and spread. (breast_malignant)",
+    "cervix_dyk": "Precancerous abnormal cervical cells (dyskaryosis) with potential to progress. (cervix_dyk)",
+    "cervix_koc": "Keratinizing cervical squamous cell carcinoma — invasive type of cervical cancer. (cervix_koc)",
+    "cervix_mep": "Benign transformation of cervical epithelial cells (metaplasia). (cervix_mep)",
+    "cervix_pab": "Cervical papilloma — usually benign wart‑like growth. (cervix_pab)",
+    "colon_aca": "Malignant colon adenocarcinoma — cancer from gland cells. (colon_aca)",
+    "colon_bnt": "Benign colon tumor — non‑cancerous growth in colon tissue. (colon_bnt)",
+    "kidney_normal": "Healthy kidney tissue with no abnormal growth. (kidney_normal)",
+    "kidney_tumor": "Tumor in the kidney; may be benign or malignant. (kidney_tumor)",
+    "lung_aca": "Lung adenocarcinoma — cancer arising from mucus‑producing cells. (lung_aca)",
+    "lung_bnt": "Non‑cancerous lung tumor. (lung_bnt)",
+    "lung_scc": "Lung squamous cell carcinoma — lung cancer from squamous cells. (lung_scc)",
+}
+
+model = keras.models.load_model("./cancer_model.keras")
+print(model)
+
+@app.post("/predict")
+async def predict(file: UploadFile = File(...)):
+    try:
+        # Read uploaded file
+        contents = await file.read()
+        image = Image.open(io.BytesIO(contents))
+    except UnidentifiedImageError:
+        return {"error": "Cannot identify image, it may be corrupted or unsupported format."}
+    except Exception as e:
+        return {"error": f"Error reading image: {e}"}
+
+    try:
+        # Convert grayscale to RGB
+        if image.mode != "L":
+            image = image.convert("L")
+        image = image.resize((128, 128))
+        img_array = np.array(image)                # shape (128,128)
+        img_array = np.stack((img_array,)*3, axis=-1)  # shape (128,128,3)
+        img_array = np.expand_dims(img_array, axis=0)  # shape (1,128,128,3)
+
+        # Apply ResNet preprocessing
+        img_array = preprocess_input(img_array.astype(np.float32))
+
+        # Predict
+        prediction = model.predict(img_array)
+        pred_index = int(np.argmax(prediction[0]))
+        pred_class = class_descriptions[class_names[pred_index]]
+        confidence = float(np.max(prediction[0]) * 100)
+
+        # Return prediction and description
+        return {
+            "prediction": pred_class,
+            "description": class_descriptions.get(pred_class, "No description available."),
+            "confidence": confidence
+        }
+
+    except Exception as e:
+        return {"error": f"Error processing image for prediction: {e}"}
+
+
+if __name__ == '__main__':
+    uvicorn.run(app, host="0.0.0.0", port=8001)

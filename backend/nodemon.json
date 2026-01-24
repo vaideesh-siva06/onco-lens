@@ -1,0 +1,11 @@
+{
+    "watch": [
+        "server.js",
+        "routes",
+        "controllers"
+    ],
+    "ignore": [
+        "api/model/**/*",
+        "node_modules"
+    ]
+}

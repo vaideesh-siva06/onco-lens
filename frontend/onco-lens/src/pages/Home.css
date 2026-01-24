@@ -1,0 +1,31 @@
+/* Wavy animated orange background */
+.wavy-bg {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background: linear-gradient(135deg, #f97316, #fb923c, #fcd34d, #f97316);
+    background-size: 400% 400%;
+    border-radius: 45% 55% 55% 45% / 55% 45% 55% 45%;
+    animation: wavyAnimation 25s ease-in-out infinite;
+    transform: rotate(-10deg);
+}
+
+/* Smooth wavy movement */
+@keyframes wavyAnimation {
+    0% {
+        transform: translateX(0) translateY(0) rotate(-10deg);
+        border-radius: 45% 55% 55% 45% / 55% 45% 55% 45%;
+    }
+
+    50% {
+        transform: translateX(10%) translateY(5%) rotate(-12deg);
+        border-radius: 50% 50% 60% 40% / 40% 60% 50% 50%;
+    }
+
+    100% {
+        transform: translateX(0) translateY(0) rotate(-10deg);
+        border-radius: 45% 55% 55% 45% / 55% 45% 55% 45%;
+    }
+}
