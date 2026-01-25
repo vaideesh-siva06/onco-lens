@@ -35,8 +35,8 @@ const ProjectPage: React.FC = () => {
 
     useEffect(() => {
         if (user.loading || !user.user || !project) return;
-        console.log(user.user?.email);
-        console.log(project?.adminEmail);
+        // console.log(user.user?.email);
+        // console.log(project?.adminEmail);
         if (project?.adminEmail !== user?.user?.email && !project?.teamEmails?.includes(user?.user?.email)) {
             navigate('/');
         }
@@ -56,7 +56,7 @@ const ProjectPage: React.FC = () => {
                 const res = await axios.get(`http://localhost:8000/api/project/${id}`, { withCredentials: true });
                 setProject(res.data);
             } catch (error) {
-                console.error('Failed to fetch project', error);
+                // console.error('Failed to fetch project', error);
             }
         };
 

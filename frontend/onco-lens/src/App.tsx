@@ -40,7 +40,7 @@ const App: React.FC = () => {
       if (storedId) getUserInfo(storedId);
     }
 
-    console.log(user);
+    // console.log(user);
   }, []);
 
   useEffect(() => {

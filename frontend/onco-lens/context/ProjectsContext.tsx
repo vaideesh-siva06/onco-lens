@@ -73,23 +73,23 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
     const fetchProjects = async () => {
         if (!user?._id) return;
         setLoading(true);
-        console.log(user._id);
+        // // console.log(user._id);
         try {
-            console.log(user._id);
+            // // console.log(user._id);
             const res = await axios.get(`http://localhost:8000/api/projects/`, {
                 params: { userId: user._id, email: user.email },
                 withCredentials: true,
             });
 
-            console.log(res.data);
+            // // console.log(res.data);
 
             // Normalize all projects
             const normalizedProjects = res.data.map(normalizeProject);
-            console.log('Fetched projects:', normalizedProjects);
+            // // console.log('Fetched projects:', normalizedProjects);
             setProjects(normalizedProjects);
             return normalizedProjects;
         } catch (err) {
-            console.error(err);
+            // // console.error(err);
             return [];
         } finally {
             setLoading(false);
@@ -99,7 +99,7 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
     const addProject = (project: Project) => {
         const normalized = normalizeProject(project);
         setProjects(prev => [normalized, ...prev]);
-        console.log('Project added:', normalized);
+        // // console.log('Project added:', normalized);
     }
 
     const updateProject = async (projectId: string, projectData: Partial<Project>) => {
@@ -119,10 +119,10 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
                 setProjects(prev => prev.map(p =>
                     p._id === projectId ? normalized : p
                 ));
-                console.log("UPDATED NORMALIZED:", normalized);
+                // // console.log("UPDATED NORMALIZED:", normalized);
             }
         } catch (err) {
-            console.error('Edit error:', err);
+            // // console.error('Edit error:', err);
             throw err;
         }
     }
@@ -136,10 +136,10 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
             });
             if (res.status === 200) {
                 setProjects(prev => prev.filter(p => p._id !== projectId));
-                console.log('Project deleted:', projectId);
+                // // console.log('Project deleted:', projectId);
             }
         } catch (err) {
-            console.error(err);
+            // // console.error(err);
         }
     };
 
@@ -153,7 +153,7 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
             setMeetings(res.data);
             return res.data;
         } catch (err) {
-            console.error(err);
+            // console.error(err);
             return [];
         }
     };
@@ -171,7 +171,7 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
             setMeetings(prev => [createdMeeting, ...prev]);
             return createdMeeting;
         } catch (err) {
-            console.error(err);
+            // console.error(err);
         }
     };
 
@@ -186,7 +186,7 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
             setMeetings(prev => prev.map(m => (m._id === meetingId ? { ...m, ...updatedMeeting } : m)));
             return updatedMeeting;
         } catch (err) {
-            console.error(err);
+            // console.error(err);
             return undefined;
         }
     };
@@ -202,7 +202,7 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
             setMeetings(prev => prev.map(m => (m._id === meetingId ? { ...m, ...updatedMeeting } : m)));
             return updatedMeeting;
         } catch (err) {
-            console.error(err);
+            // console.error(err);
             return undefined;
         }
     };
@@ -211,7 +211,7 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
     const leaveProject = async (projectId: string, userId: string, userEmail: string) => {
     try {
 
-        console.log(userEmail);
+        // console.log(userEmail);
 
         const res = await axios.delete(
             `http://localhost:8000/api/project/${projectId}/member`,
@@ -230,10 +230,10 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
 
         window.location.reload();
 
-        console.log("leaveProject response:", res.data);
+        // console.log("leaveProject response:", res.data);
         return res.data; // caller can handle success/failure
     } catch (err: any) {
-        console.error("leaveProject error:", err.response?.data || err.message);
+        // console.error("leaveProject error:", err.response?.data || err.message);
         throw err; // propagate error
     }
     };
@@ -251,7 +251,7 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
             setMeetings(prev => prev.map(m => (m._id === meetingId ? { ...m, ...updatedMeeting } : m)));
             return updatedMeeting;
         } catch (err) {
-            console.error(err);
+            // console.error(err);
             return undefined;
         }
     };
@@ -259,7 +259,7 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
     // // Fetch projects when user loads
     // useEffect(() => {
     //     window.location.reload();
-    //     console.log(location.pathname);
+    //     // console.log(location.pathname);
     // }, []);
 
     useEffect(() => {

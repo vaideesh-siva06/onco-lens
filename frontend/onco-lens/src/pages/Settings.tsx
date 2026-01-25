@@ -34,7 +34,7 @@ const Settings = () => {
             try {
                 await getUserInfo(id!);
             } catch (error) {
-                console.error("Failed to get user info:", error);
+                // console.error("Failed to get user info:", error);
             }
         };
 
@@ -51,7 +51,7 @@ const Settings = () => {
 
    const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("HANDLING UPDATE");
+        // console.log("HANDLING UPDATE");
 
         try {
             // 1️⃣ Update user in backend
@@ -66,13 +66,13 @@ const Settings = () => {
                 return;
             }
 
-            console.log("Updated user:", updatedUser);
+            // console.log("Updated user:", updatedUser);
 
             // 2️⃣ Update email/name refs
             emailRef.current = updatedUser.email;
             nameRef.current = updatedUser.name;
 
-            console.log("UPDATED NAME: " + updatedUser.name);
+            // console.log("UPDATED NAME: " + updatedUser.name);
 
             // 3️⃣ Update documents authored by this user in frontend
             documents.forEach(doc => {
@@ -83,12 +83,12 @@ const Settings = () => {
             
 
             // 4️⃣ Update adminName for projects where this user is admin
-            console.log(projects);
+            // console.log(projects);
             if (projects?.length) {
                 const updatedProjects = projects.map(proj => {
-                    console.log(proj);
-                    console.log(proj.adminId);
-                    console.log(updatedUser);
+                    // console.log(proj);
+                    // console.log(proj.adminId);
+                    // console.log(updatedUser);
                     if (proj.adminId === updatedUser._id) {
                         updateProject(proj._id, {adminName: updatedUser.name})
                     }
@@ -101,7 +101,7 @@ const Settings = () => {
                 // Also fetch documents if needed
                 for (const proj of updatedProjects) {
                     await fetchDocuments(proj._id);
-                    console.log("Fetched project documents:", proj._id);
+                    // console.log("Fetched project documents:", proj._id);
                 }
             }
 
@@ -112,12 +112,12 @@ const Settings = () => {
             toast.success("User info updated successfully!");
         } catch (error) {
             toast.error("Failed to update user info");
-            console.error("handleUpdate error:", error);
+            // console.error("handleUpdate error:", error);
         }
     };
 
-    console.log("UPDATED PROJECTS");
-    console.log(projects);
+    // console.log("UPDATED PROJECTS");
+    // console.log(projects);
 
 
     const handleDelete = async () => {

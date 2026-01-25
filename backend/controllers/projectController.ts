@@ -7,6 +7,18 @@ import { invalidateProject, invalidateProjectLists } from "../utils/redisHelpers
 import DocumentModel from "../models/DocumentModel.js";
 import { google } from 'googleapis';
 
+// Initialize Google Drive client (use your OAuth2 setup)
+const auth = new google.auth.GoogleAuth({
+  credentials: {
+    // Add your service account credentials here or load from env
+    client_email: process.env.GOOGLE_CLIENT_EMAIL,
+    private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+  },
+  scopes: ['https://www.googleapis.com/auth/drive'],
+});
+
+const drive = google.drive({ version: 'v3', auth });
+
 export const getProjectController = async (req, res) => {
     try {
         const { id } = req.params;
@@ -63,21 +75,57 @@ export const getAllProjectsController = async (req, res) => {
 
 
 export const createProjectController = async (req, res) => {
-    try {
-        const { id } = req.params;
+  try {
+    const { id } = req.params; // admin user ID
+    const { name, description, focus, cancerTypes, status, teamEmails } = req.body;
 
-        const project = await ProjectModel.create({
-            ...req.body,
-            adminId: id
-        });
-
-        await invalidateProjectLists(redis);
-
-        res.status(201).json(project);
-    } catch (error) {
-        res.status(500).json({ message: "Error creating project", error });
+    const adminUser = await UserModel.findById(id);
+    if (!adminUser?.googleAccessToken || !adminUser?.googleRefreshToken) {
+      return res.status(400).json({ message: "Admin has not connected Google account" });
     }
+
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET
+    );
+    oauth2Client.setCredentials({
+      access_token: adminUser.googleAccessToken,
+      refresh_token: adminUser.googleRefreshToken
+    });
+
+    const drive = google.drive({ version: 'v3', auth: oauth2Client });
+
+    // Create project folder in admin's Drive
+    const folder = await drive.files.create({
+      requestBody: {
+        name: `onco-lens-${id}`,
+        mimeType: 'application/vnd.google-apps.folder',
+      },
+      fields: 'id'
+    });
+
+    const project = await ProjectModel.create({
+      name,
+      description,
+      focus,
+      cancerTypes,
+      status,
+      teamEmails,
+      adminId: id,
+      adminName: name,
+      adminEmail: adminUser.email,
+      driveFolderId: folder.data.id
+    });
+
+    await invalidateProjectLists(redis);
+
+    res.status(201).json(project);
+  } catch (error: any) {
+    console.error('Create project error:', error.response?.data || error.message || error);
+    res.status(500).json({ message: "Error creating project", error: error.message });
+  }
 };
+
 
 
 
@@ -90,7 +138,7 @@ export const deleteProjectController = async (req, res) => {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    // ADMIN deletes project → full cleanup
+    // ADMIN deletes project → full cleanup including Drive folder
     if (project.adminId.toString() === userId) {
 
       await ChatModel.deleteMany({ projectId: project._id });
@@ -98,10 +146,22 @@ export const deleteProjectController = async (req, res) => {
       // 🔥 DELETE ALL DOCUMENTS FOR THIS PROJECT
       await DocumentModel.deleteMany({ projectId: project._id.toString() });
 
+      // 🔥 DELETE GOOGLE DRIVE FOLDER (if exists)
+      if (project.driveFolderId) {
+        try {
+          await drive.files.delete({ fileId: project.driveFolderId });
+          console.log(`Deleted Drive folder ${project.driveFolderId}`);
+        } catch (driveError) {
+          console.error('Failed to delete Drive folder:', driveError);
+          // Optionally continue deleting the project anyway
+        }
+      }
+
+      // Delete project from DB
       await ProjectModel.findByIdAndDelete(id);
 
     } else {
-      // Non-admin: remove from team
+      // Non-admin: remove self from team
       if (!project.teamEmails.includes(userEmail)) {
         return res.status(400).json({ message: "User not part of project" });
       }
@@ -115,6 +175,7 @@ export const deleteProjectController = async (req, res) => {
       });
     }
 
+    // Clear Redis cache
     await invalidateProject(redis, id);
     await invalidateProjectLists(redis);
 

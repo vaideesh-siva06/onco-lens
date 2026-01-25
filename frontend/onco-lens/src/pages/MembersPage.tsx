@@ -37,19 +37,19 @@ const MembersPage: React.FC = () => {
 
         loadProject();
 
-        console.log(project);
+        // console.log(project);
     }, [id]);
 
    const addMember = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        console.log("Adding member:", email, id);
+        // console.log("Adding member:", email, id);
 
         if (!email) return;
 
         try {
             const member = await user.getUserByEmail(email);
-            console.log("Fetched member:", member);
+            // console.log("Fetched member:", member);
 
             if (!member) {
                 toast.info("Make sure user has created an account!");
@@ -73,7 +73,7 @@ const MembersPage: React.FC = () => {
                 { withCredentials: true, headers: { "Content-Type": "application/json" } }
             );
 
-            console.log("POST response:", response.data);
+            // console.log("POST response:", response.data);
 
             setProject(prev =>
                 prev ? { ...prev, teamEmails: [...prev.teamEmails, email] } : prev
@@ -83,7 +83,7 @@ const MembersPage: React.FC = () => {
             setEmail("");
 
         } catch (error: any) {
-            console.error("Error adding member:", error);
+            // console.error("Error adding member:", error);
 
             if (axios.isAxiosError(error)) {
                 if (error.response?.status === 400) {
@@ -114,7 +114,7 @@ const MembersPage: React.FC = () => {
                     : prev
             );
         } catch (error: any) {
-            console.error("Failed to delete member:", error);
+            // console.error("Failed to delete member:", error);
 
             if (axios.isAxiosError(error)) {
                 if (error.response?.status === 400) {

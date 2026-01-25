@@ -19,7 +19,7 @@ const ProjectSettingsPage = () => {
 
   const isAdmin = project.adminEmail === user.email;
 
-  console.log("Is Admin:", isAdmin);
+  // console.log("Is Admin:", isAdmin);
 
   const handleDeleteMember = async (email: string) => {
         try {
@@ -37,7 +37,7 @@ const ProjectSettingsPage = () => {
 
             toast.success("Successfully left project!");
         } catch (error: any) {
-            console.error("Failed to delete member:", error);
+            // console.error("Failed to delete member:", error);
 
             setProjects(prev => prev.filter(p => p._id !== id));
 
@@ -66,7 +66,7 @@ const ProjectSettingsPage = () => {
               // Navigate home
               navigate("/");
             } catch (err) {
-              console.error("Failed to delete project:", err);
+              // console.error("Failed to delete project:", err);
               toast.error("Could not delete project. Try again.");
             }
           }}
@@ -81,7 +81,7 @@ const ProjectSettingsPage = () => {
                await handleDeleteMember(user.email)
                 navigate('/');
             } catch (err) {
-              console.error("Failed to leave project:", err);
+              // console.error("Failed to leave project:", err);
               toast.error("Could not leave project. Try again.");
             }
           }}

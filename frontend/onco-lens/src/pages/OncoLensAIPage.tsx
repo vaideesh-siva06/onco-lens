@@ -8,7 +8,7 @@ const OncoLensAIPage = () => {
     }, [])
 
     const handleCreate = () => {
-        console.log("handleCreate");
+        // console.log("handleCreate");
     }
 
     return (

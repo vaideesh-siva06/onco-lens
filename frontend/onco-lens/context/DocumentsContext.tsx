@@ -57,10 +57,10 @@ export const DocumentProvider: React.FC<{ children: ReactNode }> = ({
 
         return [...filteredPrev, ...newDocs];
     });
-      console.log(documents);
-      console.log("SUCCESS1");
+      // console.log(documents);
+      // console.log("SUCCESS1");
     } catch (err) {
-      console.error("Failed to fetch documents:", err);
+      // console.error("Failed to fetch documents:", err);
     } finally {
       setIsLoading(false);
     }

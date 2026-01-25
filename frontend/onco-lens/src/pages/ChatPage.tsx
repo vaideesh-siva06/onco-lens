@@ -124,7 +124,7 @@ const ChatPage = () => {
 
     const handleEmojiClick = (emoji: string) => {
         setChosenEmoji(emoji);
-        console.log("EMOJI CHOSEN");
+        // console.log("EMOJI CHOSEN");
         setNewMessage((prev) => prev + emoji.emoji);
     };
 
@@ -154,7 +154,7 @@ const ChatPage = () => {
             });
         }
         
-        console.log(project.adminName);
+        // console.log(project.adminName);
 
         // Team members
         for (const email of project.teamEmails) {
@@ -180,7 +180,7 @@ const ChatPage = () => {
     const loadChatWithContact = async (contactId: string) => {
         if (!user?.user?._id || !projectId) return;
 
-        // console.log("THIS IS LOAD CHAT WITH CONTACT");
+        // // console.log("THIS IS LOAD CHAT WITH CONTACT");
 
         try {
             const res = await axios.get(`http://localhost:8000/api/chat/${user.user._id}/${contactId}?projectId=${projectId}`, {
@@ -188,11 +188,11 @@ const ChatPage = () => {
             });
 
             const chat = res.data;
-            //console.log(chat);
+            //// console.log(chat);
 
             // Map messages to your frontend format
             const mappedMessages = chat.messages.map((m: any) => (
-                // console.log(m.senderId._id),
+                // // console.log(m.senderId._id),
                 {
                     id: m._id,
                     text: m.text,
@@ -210,28 +210,28 @@ const ChatPage = () => {
             }));
             // scrollToBottom();
         } catch (err) {
-            console.error('Failed to load chat:', err);
+            // console.error('Failed to load chat:', err);
         }
     };
 
 
     // useEffect(() => {
-    //     console.log("LOOK AT THIS:", user?.user?._id);
+    //     // console.log("LOOK AT THIS:", user?.user?._id);
 
     //     const s = io("http://localhost:8000", { transports: ["websocket"] });
     //     setSocket(s);
 
     //     s.on("connect", () => {
-    //         console.log("Socket connected:", s.id);
+    //         // console.log("Socket connected:", s.id);
     //         setSocketReady(true);
     //         if (!user.user?._id) {
-    //             console.log("No user");
+    //             // console.log("No user");
     //             return
     //         };
     //         loadChatWithContact(user.user._id);
     //     });
 
-    //     console.log(contacts);
+    //     // console.log(contacts);
 
 
     //     return () => s.disconnect();
@@ -241,7 +241,7 @@ const ChatPage = () => {
     useEffect(() => {
         if (!user?.user?._id) return;
         loadContacts();
-        console.log("LOAD CONTACTS RAN!");
+        // console.log("LOAD CONTACTS RAN!");
     }, [user]);
 
     // Load latest message for every contact AFTER contacts are loaded
@@ -278,7 +278,7 @@ const ChatPage = () => {
                         newMessages[c.id] = [];
                     }
                 } catch (err) {
-                    console.error("Failed to load chat for", c.id);
+                    // console.error("Failed to load chat for", c.id);
                     newMessages[c.id] = [];
                 }
             }));
@@ -353,7 +353,7 @@ const ChatPage = () => {
 
     useEffect(() => {
         if (!user?.user?._id) {
-            //console.log("No user");
+            //// console.log("No user");
             return;
         };  // Wait for the real user
         projects.fetchProjects();
@@ -388,10 +388,10 @@ const ChatPage = () => {
         setSocket(s);
 
         s.on("connect", () => {
-            //console.log("Socket connected:", s.id);
+            //// console.log("Socket connected:", s.id);
             setSocketReady(true);
             if (!user.user?._id) {
-                console.log("No user");
+                // console.log("No user");
                 return
             };
             loadChatWithContact(user.user._id);
@@ -401,7 +401,7 @@ const ChatPage = () => {
         return () => s.disconnect();
     }, [user]);
 
-    //console.log(contacts);
+    //// console.log(contacts);
 
     // -----------------------------
     // 2. Register User
@@ -410,7 +410,7 @@ const ChatPage = () => {
         if (!socketReady || !socket || !user?.user?._id) return;
 
         socket.emit("register_user", user.user._id);
-        console.log("Registered user:", user.user._id);
+        // console.log("Registered user:", user.user._id);
     }, [socketReady, socket, user]);
 
     useEffect(() => {
@@ -541,7 +541,7 @@ const ChatPage = () => {
     const handleSendMessage = async () => {
         if (!newMessage.trim() || !selectedContact || !user?.user?._id || !projectId) return;
 
-        console.log(projectId);
+        // console.log(projectId);
 
         const messagePayload = {
             senderId: user.user._id,
@@ -558,7 +558,7 @@ const ChatPage = () => {
             });
 
             const savedMessage = res.data;
-            console.log("FIRST SEND!");
+            // console.log("FIRST SEND!");
 
             const newMsg: Message = {
                 id: savedMessage._id || `msg-${Date.now()}`, // fallback for frontend
@@ -588,7 +588,7 @@ const ChatPage = () => {
 
             setNewMessage('');
         } catch (err) {
-            console.error('Failed to send message:', err);
+            // console.error('Failed to send message:', err);
         }
     };
 

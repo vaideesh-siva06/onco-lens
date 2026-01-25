@@ -34,7 +34,7 @@ const MeetingPage: React.FC = () => {
 
             window.open(meeting.link || `${window.location.origin}/meeting/${meeting._id}`, "_blank");
         } catch (err) {
-            console.error("Failed to start meeting:", err);
+            // console.error("Failed to start meeting:", err);
         }
     };
 
@@ -53,15 +53,15 @@ const MeetingPage: React.FC = () => {
             return;
         }
 
-        console.log(meetings[0]);
+        // console.log(meetings[0]);
 
         if (meetings[0].invitees.includes(emailInputs[meetingId])) {
             toast.error("Participant already added!");
             return;
         }
 
-        // console.log(meetings[0].adminEmail);
-        // console.log(emailInputs[meetingId]);
+        // // console.log(meetings[0].adminEmail);
+        // // console.log(emailInputs[meetingId]);
 
         try {
 
@@ -69,7 +69,7 @@ const MeetingPage: React.FC = () => {
             setEmailInputs(prev => ({ ...prev, [meetingId]: "" }));
             requestAnimationFrame(() => inputRefs.current[meetingId]?.focus());
         } catch (error) {
-            console.error("Failed to add participant:", error);
+            // console.error("Failed to add participant:", error);
         }
 
     };

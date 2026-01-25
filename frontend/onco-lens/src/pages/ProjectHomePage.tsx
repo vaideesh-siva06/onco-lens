@@ -18,11 +18,11 @@ const ProjectHomePage = ({ project }: { project: Project }) => {
 
     useEffect(() => {
         fetchDocuments(project._id);
-        console.log(project._id)
-        console.log(user.user?._id)
+        // console.log(project._id)
+        // console.log(user.user?._id)
     }, [project._id]);
 
-    console.log(documents);
+    // console.log(documents);
 
     // Pagination logic
     const indexOfLastDoc = currentPage * docsPerPage;
@@ -32,7 +32,7 @@ const ProjectHomePage = ({ project }: { project: Project }) => {
     const totalPages = Math.ceil(documents.length / docsPerPage);
 
   const deleteDocument = async (documentId: string) => {
-        console.log(documentId);
+        // console.log(documentId);
 
         try {
             await axios.delete(
@@ -48,9 +48,9 @@ const ProjectHomePage = ({ project }: { project: Project }) => {
             
             removeDocument(documentId);
 
-            console.log(documents);
+            // console.log(documents);
         } catch (err) {
-            console.error("Failed to delete document:", err);
+            // console.error("Failed to delete document:", err);
             toast.error("Failed to delete document");
         }
     };

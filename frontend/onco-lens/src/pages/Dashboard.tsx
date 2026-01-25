@@ -30,7 +30,7 @@ const DashboardContent: React.FC = () => {
             if (storedId) getUserInfo(storedId);
         }
 
-        console.log(user);
+        // // console.log(user);
     }, [user, getUserInfo]);
 
     // Save activePage to localStorage whenever it changes

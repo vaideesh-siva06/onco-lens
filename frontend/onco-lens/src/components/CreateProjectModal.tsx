@@ -32,6 +32,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
     editMode = false,
     projectData = null
 }) => {
+    const [showModal, setShowModal] = useState(isOpen);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [focus, setFocus] = useState('');
@@ -42,6 +43,8 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
     const [emailInput, setEmailInput] = useState('');
     const { user } = useUser();
     const { addProject, updateProject } = useProjects();
+    const [animate, setAnimate] = useState(false);
+
 
     // Pre-fill form when in edit mode
     useEffect(() => {
@@ -67,6 +70,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             setTeamEmails(projectData.teamEmails || []);
         }
     }, [editMode, projectData]);
+    
 
     // Disable scroll when modal is open
     useEffect(() => {
@@ -80,7 +84,19 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         };
     }, [isOpen]);
 
-    if (!isOpen) return null;
+    useEffect(() => {
+        if (isOpen) {
+            setShowModal(true);       // mount the modal
+            setTimeout(() => setAnimate(true), 10); // trigger open animation
+        } else {
+            setAnimate(false);        // trigger close animation
+            const timeout = setTimeout(() => setShowModal(false), 300);
+            return () => clearTimeout(timeout);
+        }
+    }, [isOpen]);
+
+
+    if (!showModal) return null;
 
     const resetForm = () => {
         setName('');
@@ -184,8 +200,16 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
     };
 
     return (
-        <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl shadow-lg w-full max-w-3xl p-6 relative max-h-[90vh] overflow-y-auto">
+        <div
+    className={`fixed inset-0 flex items-center justify-center z-50
+        bg-black/20 transition-opacity duration-300
+        ${animate ? 'opacity-100' : 'opacity-0'}`}
+>
+    <div
+        className={`bg-white rounded-xl shadow-lg w-full max-w-3xl p-6 relative max-h-[90vh] overflow-y-auto
+            transform transition-all duration-300
+            ${animate ? 'translate-y-0 opacity-100' : '-translate-y-6 opacity-0'}`}
+    >
                 {/* Close Button */}
                 <button
                     className="absolute top-4 right-4 text-gray-600 hover:text-gray-900"

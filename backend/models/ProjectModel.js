@@ -11,6 +11,11 @@ const projectSchema = new mongoose.Schema({
         type: [String],
         required: false
     },
+    driveFolderId: {
+        type: String,
+        required: false,
+    },
+    
     status: {
         type: String,
         required: false
