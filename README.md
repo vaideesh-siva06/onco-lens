@@ -147,7 +147,6 @@ npm run dev
 
 - Powered by **Socket.IO**  
 - Features:  
-  - Online/offline status for each team member  
   - Emoji support  
   - Auto-scroll and “new message” indicators  
 
