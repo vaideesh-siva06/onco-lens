@@ -1,7 +1,6 @@
 import { Server, Socket } from "socket.io";
 import MeetingModel from "../models/MeetingModel.js";
 import UserModel from "../models/UserModel.js";
-import e from "express";
 
 interface RoomUser {
     odId: string;
