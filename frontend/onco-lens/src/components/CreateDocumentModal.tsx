@@ -20,7 +20,7 @@ const CreateDocumentModal: React.FC<CreateDocumentModalProps> = ({
   const [title, setTitle] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const { id } = useParams<{ id: string }>()
-      const { documents, fetchDocuments, addDocument, removeDocument } = useDocuments();
+      const { addDocument } = useDocuments();
   
 
   const user = useUser();
@@ -65,6 +65,7 @@ const CreateDocumentModal: React.FC<CreateDocumentModalProps> = ({
         // window.open(res.data.documentUrl, '_blank')
 
         addDocument({
+            documentId: res.data.document._id,
             _id: res.data.document._id,
             title: res.data.document.title,
             documentUrl: res.data.documentUrl,

@@ -13,7 +13,7 @@ const Settings = () => {
     const { user, setUser, updateUser, getUserInfo } = useUser();
     const { logout } = useAuth();
     const { id } = useParams();
-    const { documents, fetchDocuments, updateDocument, setDocuments } = useDocuments(); // ✅ get documents from context
+    const { documents, fetchDocuments, updateDocument } = useDocuments(); // ✅ get documents from context
     const { projects, setProjects, updateProject } = useProjects();
 
     // Local state for form inputs
@@ -21,8 +21,8 @@ const Settings = () => {
     const [email, setEmail] = useState<string>(user?.email || '');
     const [password, setPassword] = useState<string>('');
 
-    const emailRef = useRef<string>(email);
-    const nameRef = useRef<string>(name);
+    const nameRef = useRef<HTMLInputElement>(null);
+    const emailRef = useRef<HTMLInputElement>(null);
 
     const socket = io("http://localhost:8000");
     const navigate = useNavigate();

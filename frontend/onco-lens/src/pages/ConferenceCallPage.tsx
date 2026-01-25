@@ -125,10 +125,10 @@ const ConferenceCallPage: React.FC = () => {
     const [name, setName] = useState<string>("");
     const [adminId, setAdminId] = useState<string | null>(null);
     const [meetingStatus, setMeetingStatus] = useState<string | null>(null);
-    const [debugLog, setDebugLog] = useState<string[]>([]);
-    const [isConnected, setIsConnected] = useState(false);
+    const [_, setDebugLog] = useState<string[]>([]);
+    const [, setIsConnected] = useState(false);
     const [speakingPeerId, setSpeakingPeerId] = useState<string | null>(null);
-    const [pollingIntervalId, setPollingIntervalId] = useState<NodeJS.Timer | null>(null);
+    const [pollingIntervalId, setPollingIntervalId] = useState<number | null>(null);
     const [showParticipants, setShowParticipants] = useState(false);
 
     const socketRef = useRef<Socket | null>(null);
@@ -1007,10 +1007,10 @@ const ConferenceCallPage: React.FC = () => {
                         animate={{ x: 0 }}
                         exit={{ x: 420 }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="fixed top-0 right-0 h-full w-80 bg-white shadow-2xl z-50 flex flex-col border-l border-gray-200 z-[9999]"
+                        className="fixed top-0 right-0 h-full w-80 bg-white shadow-2xl z-9999 flex flex-col border-l border-gray-200"
                     >
                         {/* Header */}
-                        <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-orange-500 to-orange-600">
+                        <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-linear-to-r from-orange-500 to-orange-600">
                             <h2 className="text-lg font-semibold text-white flex items-center gap-2">
                                 <FaComments /> Chat
                             </h2>
@@ -1053,7 +1053,7 @@ const ConferenceCallPage: React.FC = () => {
                                             )}
                                             <div
                                                 className={`rounded-2xl px-4 py-2 ${msg.isOwn
-                                                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-br-md text-left'
+                                                    ? 'bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-br-md text-left'
                                                     : 'bg-white text-gray-800 shadow-sm border border-gray-100 rounded-bl-md text-left'
                                                     }`}
                                             >
@@ -1061,7 +1061,7 @@ const ConferenceCallPage: React.FC = () => {
                                                 {/* <p className="text-sm break-words">{msg.message}</p> */}
 
                                                 {/* WITH THIS: */}
-                                                <p className="text-sm break-words">
+                                                <p className="text-sm wrap-break-word">
                                                     <MessageContent message={msg.message} isOwn={msg.isOwn} />
                                                 </p>
                                             </div>
@@ -1108,7 +1108,7 @@ const ConferenceCallPage: React.FC = () => {
                                     onClick={sendMessage}
                                     disabled={!newMessage.trim()}
                                     className={`p-3 rounded-xl transition-all duration-200 ${newMessage.trim()
-                                        ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:shadow-lg hover:scale-105'
+                                        ? 'bg-linear-to-r from-orange-500 to-orange-600 text-white hover:shadow-lg hover:scale-105'
                                         : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                                         }`}
                                 >
@@ -1121,7 +1121,7 @@ const ConferenceCallPage: React.FC = () => {
             </AnimatePresence>
 
             {/* Bottom Control Bar */}
-            <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-white rounded-full px-6 py-3 flex gap-4 z-[9999] shadow-lg">
+            <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-white rounded-full px-6 py-3 flex gap-4 z-9999 shadow-lg">
                 <div className="flex gap-4">
                     <button
                         onClick={toggleMic}
@@ -1225,7 +1225,7 @@ const ParticipantItem: React.FC<ParticipantItemProps> = ({ name, isMuted, isVide
             onMouseLeave={() => setHover(false)}
         >
             <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
+                <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
                     {name.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex flex-col">

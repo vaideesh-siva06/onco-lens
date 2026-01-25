@@ -1,4 +1,4 @@
-import React, { useEffect, useState, type ReactNode } from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import { useUser } from '../../context/UserContext';
 import { ModalProvider, useModal } from '../../context/ModalContext';
@@ -6,8 +6,8 @@ import CreateProjectModal from '../components/CreateProjectModal';
 import ProjectsComponents from '../components/ProjectsComponents';
 import MeetingPage from '../pages/MeetingPage';
 import OncoLensAIPage from './OncoLensAIPage';
-import { ProjectsProvider, useProjects } from '../../context/ProjectsContext';
-import CreateEventModal from '../components/CreateEventModal';
+import { ProjectsProvider } from '../../context/ProjectsContext';
+// import CreateEventModal from '../components/CreateEventModal';
 
 const DashboardContent: React.FC = () => {
     const { user, getUserInfo } = useUser();
@@ -49,7 +49,7 @@ const DashboardContent: React.FC = () => {
             {/* Main content */}
             <div className="flex-1 p-6 mt-20 md:mt-0">
                 <h1 className="text-3xl font-bold text-gray-800 mb-4">
-                    Welcome {user?.name || user?.user?.name || '!'}!
+                    Welcome {user?.name || '!'}!
                 </h1>
                 <ProjectsProvider>
                     {activePage === 'projects' && <ProjectsComponents />}
@@ -77,7 +77,7 @@ const DashboardContent: React.FC = () => {
 const Dashboard: React.FC = () => (
     <ModalProvider>
         <DashboardContent />
-        <CreateEventModal />
+        {/* <CreateEventModal /> */}
     </ModalProvider>
 );
 

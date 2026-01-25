@@ -1,4 +1,3 @@
-import React from 'react';
 import { useUser } from '../../context/UserContext';
 import { useProjects } from '../../context/ProjectsContext';
 import { useNavigate, useParams } from 'react-router';
@@ -8,7 +7,7 @@ import axios from 'axios';
 const ProjectSettingsPage = () => {
   const { user } = useUser();
   const { id } = useParams<{ id: string }>();
-  const { projects, leaveProject, deleteProject, setProjects } = useProjects();
+  const { projects, deleteProject, setProjects } = useProjects();
   const navigate = useNavigate();
 
   const project = projects?.[0];
@@ -27,7 +26,7 @@ const ProjectSettingsPage = () => {
             await axios.delete(
                 `http://localhost:8000/api/project/${id}/member`,
                 {
-                    data: { email, currUserId: user.user?._id },
+                    data: { email, currUserId: user?._id },
                     withCredentials: true
                 }
             );

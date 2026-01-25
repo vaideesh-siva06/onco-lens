@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Project } from './ProjectPage';
 import DocumentComponent from '../components/DocumentComponent';
 import { useDocuments } from '../../context/DocumentsContext';
 import { useUser } from '../../context/UserContext';
-import { FaTrash, FaPaperPlane } from 'react-icons/fa';
+import { FaTrash } from 'react-icons/fa';
 import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
 const ProjectHomePage = ({ project }: { project: Project }) => {
-    const { documents, fetchDocuments, setDocuments, removeDocument } = useDocuments();
+    const { documents, fetchDocuments, removeDocument } = useDocuments();
     const user = useUser();
 
     const [currentPage, setCurrentPage] = useState(1);

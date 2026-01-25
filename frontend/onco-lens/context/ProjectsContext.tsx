@@ -1,20 +1,21 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import type { ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import axios from "axios";
 import { useUser } from "./UserContext";
-import { useLocation, useNavigate } from "react-router-dom";
+
+// ------------------ Types ------------------
 
 export interface Project {
     _id: string;
     name: string;
     description: string;
-    adminId: string; // Always a string ID
+    adminId: string;
     adminEmail: string;
     teamEmails: string[];
     focus?: string;
     status?: string;
     cancerTypes?: string[];
     adminName?: string;
+    adminIsOnline?: boolean;
 }
 
 export interface Meeting {
@@ -29,22 +30,26 @@ export interface Meeting {
     adminEmail?: string;
 }
 
-interface ProjectsContextType {
+// ------------------ Context Type ------------------
+
+export interface ProjectsContextType {
     projects: Project[];
     meetings: Meeting[];
     loading: boolean;
+    setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
     addProject: (project: Project) => void;
+    updateProject: (projectId: string, projectData: Partial<Project>) => Promise<void>;
     fetchProjects: () => Promise<Project[]>;
-    deleteProject: (projectId: string) => void;
+    deleteProject: (projectId: string) => Promise<void>;
     createMeeting: (meeting: Omit<Meeting, "_id" | "userId">) => Promise<Meeting | undefined>;
     fetchMeetings: () => Promise<Meeting[]>;
     addParticipantToMeeting: (meetingId: string, email: string) => Promise<Meeting | undefined>;
     deleteParticipantFromMeeting: (meetingId: string, email: string) => Promise<Meeting | undefined>;
     deleteMeeting: (meetingId: string) => Promise<Meeting | undefined>;
-    setProjects: (projects: Project[]) => void;
-    updateProject: (projectId: string, projectData: Partial<Project>) => Promise<void>;
     leaveProject: (projectId: string) => Promise<Project | undefined>;
 }
+
+// ------------------ Context ------------------
 
 const ProjectsContext = createContext<ProjectsContextType | undefined>(undefined);
 
@@ -54,42 +59,38 @@ export const useProjects = () => {
     return context;
 };
 
-// Helper function to normalize project data
-const normalizeProject = (project: any): Project => {
-    return {
-        ...project,
-        adminId: typeof project.adminId === 'object' ? project.adminId._id : project.adminId
-    };
-};
+// ------------------ Provider ------------------
 
-export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+interface ProjectsProviderProps {
+    children: ReactNode;
+}
+
+export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
     const { user } = useUser();
+
     const [projects, setProjects] = useState<Project[]>([]);
     const [meetings, setMeetings] = useState<Meeting[]>([]);
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
 
-    // Projects
-    const fetchProjects = async () => {
-        if (!user?._id) return;
+    // ------------------ Helper ------------------
+    const normalizeProject = (project: any): Project => ({
+        ...project,
+        adminId: typeof project.adminId === "object" ? project.adminId._id : project.adminId,
+    });
+
+    // ------------------ Projects ------------------
+    const fetchProjects = async (): Promise<Project[]> => {
+        if (!user?._id) return [];
         setLoading(true);
-        // // console.log(user._id);
         try {
-            // // console.log(user._id);
             const res = await axios.get(`http://localhost:8000/api/projects/`, {
                 params: { userId: user._id, email: user.email },
                 withCredentials: true,
             });
-
-            // // console.log(res.data);
-
-            // Normalize all projects
-            const normalizedProjects = res.data.map(normalizeProject);
-            // // console.log('Fetched projects:', normalizedProjects);
-            setProjects(normalizedProjects);
-            return normalizedProjects;
-        } catch (err) {
-            // // console.error(err);
+            const normalized = res.data.map(normalizeProject);
+            setProjects(normalized);
+            return normalized;
+        } catch {
             return [];
         } finally {
             setLoading(false);
@@ -97,198 +98,135 @@ export const ProjectsProvider: React.FC<{ children: ReactNode }> = ({ children }
     };
 
     const addProject = (project: Project) => {
-        const normalized = normalizeProject(project);
-        setProjects(prev => [normalized, ...prev]);
-        // // console.log('Project added:', normalized);
-    }
+        setProjects(prev => [normalizeProject(project), ...prev]);
+    };
 
     const updateProject = async (projectId: string, projectData: Partial<Project>) => {
         if (!user?._id) return;
-        try {
-            const res = await axios.put(
-                `http://localhost:8000/api/project/${projectId}`,
-                {
-                    ...projectData,
-                    userId: user._id
-                },
-                { withCredentials: true }
-            );
-
-            if (res.status === 200) {
-                const normalized = normalizeProject(res.data.project);
-                setProjects(prev => prev.map(p =>
-                    p._id === projectId ? normalized : p
-                ));
-                // // console.log("UPDATED NORMALIZED:", normalized);
-            }
-        } catch (err) {
-            // // console.error('Edit error:', err);
-            throw err;
-        }
-    }
-
-    const deleteProject = async (projectId: string) => {
-        if (!user?._id) return;
-        try {
-            const res = await axios.delete(`http://localhost:8000/api/project/${projectId}`, {
-                data: { id: projectId, userId: user._id, userEmail: user.email },
-                withCredentials: true,
-            });
-            if (res.status === 200) {
-                setProjects(prev => prev.filter(p => p._id !== projectId));
-                // // console.log('Project deleted:', projectId);
-            }
-        } catch (err) {
-            // // console.error(err);
+        const res = await axios.put(
+            `http://localhost:8000/api/project/${projectId}`,
+            { ...projectData, userId: user._id },
+            { withCredentials: true }
+        );
+        if (res.status === 200) {
+            const normalized = normalizeProject(res.data.project);
+            setProjects(prev => prev.map(p => (p._id === projectId ? normalized : p)));
         }
     };
 
-    // Meetings
+    const deleteProject = async (projectId: string) => {
+        if (!user?._id) return;
+        const res = await axios.delete(`http://localhost:8000/api/project/${projectId}`, {
+            data: { id: projectId, userId: user._id, userEmail: user.email },
+            withCredentials: true,
+        });
+        if (res.status === 200) {
+            setProjects(prev => prev.filter(p => p._id !== projectId));
+        }
+    };
+
+    const leaveProject = async (projectId: string): Promise<Project | undefined> => {
+        if (!user?._id) return;
+        try {
+            const res = await axios.delete(
+                `http://localhost:8000/api/project/${projectId}/member`,
+                {
+                    withCredentials: true,
+                    data: { currUserId: user._id, projectId, email: user.email },
+                    headers: { "Content-Type": "application/json" },
+                }
+            );
+            setProjects(prev => prev.filter(p => p._id !== projectId));
+            return res.data;
+        } catch (err) {
+            console.error(err);
+            return undefined;
+        }
+    };
+
+    // ------------------ Meetings ------------------
     const fetchMeetings = async (): Promise<Meeting[]> => {
         if (!user?._id) return [];
         try {
-            const res = await axios.get(`http://localhost:8000/api/meetings/${user._id}?email=${user.email}`, {
-                withCredentials: true,
-            });
+            const res = await axios.get(
+                `http://localhost:8000/api/meetings/${user._id}?email=${user.email}`,
+                { withCredentials: true }
+            );
             setMeetings(res.data);
             return res.data;
-        } catch (err) {
-            // console.error(err);
+        } catch {
             return [];
         }
     };
 
-    const createMeeting = async (meeting: Omit<Meeting, "_id" | "userId">): Promise<Meeting | undefined> => {
+    const createMeeting = async (meeting: Omit<Meeting, "_id" | "userId">) => {
         if (!user?._id) return;
-        try {
-            const res = await axios.post(`http://localhost:8000/api/meeting/create`, {
-                ...meeting,
-                userId: user._id,
-                userEmail: user.email,
-            }, { withCredentials: true });
-
-            const createdMeeting: Meeting = res.data;
-            setMeetings(prev => [createdMeeting, ...prev]);
-            return createdMeeting;
-        } catch (err) {
-            // console.error(err);
-        }
-    };
-
-    const addParticipantToMeeting = async (meetingId: string, email: string): Promise<Meeting | undefined> => {
-        if (!user?._id) return;
-        try {
-            const res = await axios.put(`http://localhost:8000/api/meeting/${meetingId}/add-participant`,
-                { meetingId, email },
-                { withCredentials: true }
-            );
-            const updatedMeeting: Meeting = res.data.meeting || res.data;
-            setMeetings(prev => prev.map(m => (m._id === meetingId ? { ...m, ...updatedMeeting } : m)));
-            return updatedMeeting;
-        } catch (err) {
-            // console.error(err);
-            return undefined;
-        }
-    };
-
-    const deleteParticipantFromMeeting = async (meetingId: string, email: string): Promise<Meeting | undefined> => {
-        if (!user?._id) return;
-        try {
-            const res = await axios.put(`http://localhost:8000/api/meeting/${meetingId}/remove-participant`,
-                { meetingId, email },
-                { withCredentials: true }
-            );
-            const updatedMeeting: Meeting = res.data.meeting || res.data;
-            setMeetings(prev => prev.map(m => (m._id === meetingId ? { ...m, ...updatedMeeting } : m)));
-            return updatedMeeting;
-        } catch (err) {
-            // console.error(err);
-            return undefined;
-        }
-    };
-
-    // leaveProject.ts
-    const leaveProject = async (projectId: string, userId: string, userEmail: string) => {
-    try {
-
-        // console.log(userEmail);
-
-        const res = await axios.delete(
-            `http://localhost:8000/api/project/${projectId}/member`,
-            {
-                withCredentials: true,
-                data: {
-                    email: userEmail,
-                    currUserId: userId,
-                    projectId,
-                },
-                headers: {
-                'Content-Type': 'application/json'
-                }
-            }
+        const res = await axios.post(
+            `http://localhost:8000/api/meeting/create`,
+            { ...meeting, userId: user._id, userEmail: user.email },
+            { withCredentials: true }
         );
-
-        window.location.reload();
-
-        // console.log("leaveProject response:", res.data);
-        return res.data; // caller can handle success/failure
-    } catch (err: any) {
-        // console.error("leaveProject error:", err.response?.data || err.message);
-        throw err; // propagate error
-    }
+        setMeetings(prev => [res.data, ...prev]);
+        return res.data;
     };
 
+    const addParticipantToMeeting = async (meetingId: string, email: string) => {
+        if (!user?._id) return;
+        const res = await axios.put(
+            `http://localhost:8000/api/meeting/${meetingId}/add-participant`,
+            { meetingId, email },
+            { withCredentials: true }
+        );
+        const updated = res.data.meeting || res.data;
+        setMeetings(prev => prev.map(m => (m._id === meetingId ? { ...m, ...updated } : m)));
+        return updated;
+    };
 
+    const deleteParticipantFromMeeting = async (meetingId: string, email: string) => {
+        if (!user?._id) return;
+        const res = await axios.put(
+            `http://localhost:8000/api/meeting/${meetingId}/remove-participant`,
+            { meetingId, email },
+            { withCredentials: true }
+        );
+        const updated = res.data.meeting || res.data;
+        setMeetings(prev => prev.map(m => (m._id === meetingId ? { ...m, ...updated } : m)));
+        return updated;
+    };
 
     const deleteMeeting = async (meetingId: string) => {
         if (!user?._id) return;
-        try {
-            const res = await axios.delete(`http://localhost:8000/api/meeting/${meetingId}/delete`, {
-                withCredentials: true,
-                data: { meetingId }
-            });
-            const updatedMeeting: Meeting = res.data.meeting || res.data;
-            setMeetings(prev => prev.map(m => (m._id === meetingId ? { ...m, ...updatedMeeting } : m)));
-            return updatedMeeting;
-        } catch (err) {
-            // console.error(err);
-            return undefined;
-        }
+        const res = await axios.delete(
+            `http://localhost:8000/api/meeting/${meetingId}/delete`,
+            { withCredentials: true, data: { meetingId } }
+        );
+        const updated = res.data.meeting || res.data;
+        setMeetings(prev => prev.map(m => (m._id === meetingId ? { ...m, ...updated } : m)));
+        return updated;
     };
 
-    // // Fetch projects when user loads
-    // useEffect(() => {
-    //     window.location.reload();
-    //     // console.log(location.pathname);
-    // }, []);
-
+    // ------------------ Fetch on load ------------------
     useEffect(() => {
-        if (user?._id) {
-            fetchProjects();
-        }
+        if (user?._id) fetchProjects();
     }, [user]);
 
+    // ------------------ Context Value ------------------
+    const value: ProjectsContextType = {
+        projects,
+        meetings,
+        loading,
+        setProjects,
+        addProject,
+        updateProject,
+        fetchProjects,
+        deleteProject,
+        createMeeting,
+        fetchMeetings,
+        addParticipantToMeeting,
+        deleteParticipantFromMeeting,
+        deleteMeeting,
+        leaveProject
+    };
 
-    return (
-        <ProjectsContext.Provider
-            value={{
-                projects,
-                meetings,
-                loading,
-                setProjects,
-                addProject,
-                updateProject,
-                fetchProjects,
-                deleteProject,
-                createMeeting,
-                fetchMeetings,
-                addParticipantToMeeting,
-                deleteParticipantFromMeeting,
-                deleteMeeting,
-                leaveProject
-            }}
-        >
-            {children}
-        </ProjectsContext.Provider>
-    );
+    return <ProjectsContext.Provider value={value}>{children}</ProjectsContext.Provider>;
 };

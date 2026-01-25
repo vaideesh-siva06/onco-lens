@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaPaperPlane, FaSearch, FaEllipsisV, FaUserCircle, FaSmile } from 'react-icons/fa';
+import { FaPaperPlane, FaSearch, FaUserCircle, FaSmile } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import io, { Socket } from "socket.io-client";
 import { useProjects } from '../../context/ProjectsContext';
 import { useUser } from '../../context/UserContext';
 import axios from 'axios';
-import { useParams } from 'react-router';
 import EmojiPicker from 'emoji-picker-react';
 
 interface Message {
@@ -46,7 +45,7 @@ const ChatPage = () => {
     const messagesContainerRef = useRef<HTMLDivElement>(null);
 
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-    const [chosenEmoji, setChosenEmoji] = useState<string>('');
+    const [_, setChosenEmoji] = useState<string>('');
     const emojiPickerRef = useRef<HTMLDivElement>(null);
     const emojiButtonRef = useRef<HTMLButtonElement>(null);
     const [projectId, setProjectId] = useState<string | null>(null);
@@ -99,30 +98,30 @@ const ChatPage = () => {
 
         const handleUserNameUpdate = (data: { userId: string; newName: string }) => {
             setContacts(prev =>
-                prev.map(c => c.id === data.userId ? { ...c, name: data.newName } : c)
+            prev.map(c => (c.id === data.userId ? { ...c, name: data.newName } : c))
             );
 
-            // Also update messages where senderName matches this user
             setMessages(prev => {
-                const updated: Record<string, Message[]> = {};
-                for (const contactId in prev) {
-                    updated[contactId] = prev[contactId].map(msg =>
-                        msg.senderId === data.userId
-                            ? { ...msg, senderName: data.newName }
-                            : msg
-                    );
-                }
-                return updated;
+            const updated: Record<string, Message[]> = {};
+            for (const contactId in prev) {
+                updated[contactId] = prev[contactId].map(msg =>
+                msg.senderId === data.userId ? { ...msg, senderName: data.newName } : msg
+                );
+            }
+            return updated;
             });
         };
 
         socket.on("user_name_updated", handleUserNameUpdate);
 
-        return () => socket.off("user_name_updated", handleUserNameUpdate);
-    }, [socket]);
+        return () => {
+            socket.off("user_name_updated", handleUserNameUpdate);
+        };
+        }, [socket, setContacts, setMessages]);
 
 
-    const handleEmojiClick = (emoji: string) => {
+
+    const handleEmojiClick = (emoji: any) => {
         setChosenEmoji(emoji);
         // console.log("EMOJI CHOSEN");
         setNewMessage((prev) => prev + emoji.emoji);
@@ -149,7 +148,7 @@ const ChatPage = () => {
                 lastMessage: '',
                 timestamp: '',
                 unread: 0,
-                online: project.adminIsOnline || false,
+                online: project?.adminIsOnline || false,
                 sender: 'user',
             });
         }
@@ -160,7 +159,7 @@ const ChatPage = () => {
         for (const email of project.teamEmails) {
             if (email === user.user.email) continue;
 
-            const member = await user.getUserByEmail(email); // fetch user info
+            const member: any = await user.getUserByEmail(email); // fetch user info
             if (!member?._id) continue;
 
             tempContacts.push({
@@ -260,7 +259,7 @@ const ChatPage = () => {
             await Promise.all(contactsToFetch.map(async (c) => {
                 try {
                     const res = await axios.get(
-                        `http://localhost:8000/api/chat/${user.user._id}/${c.id}?projectId=${projectId}`,
+                        `http://localhost:8000/api/chat/${user?.user?._id}/${c.id}?projectId=${projectId}`,
                         { withCredentials: true }
                     );
                     const chat = res.data;
@@ -268,7 +267,7 @@ const ChatPage = () => {
                         newMessages[c.id] = chat.messages.map((m: any) => ({
                             id: m._id,
                             text: m.text,
-                            sender: m.senderId._id === user.user._id ? "user" : "other",
+                            sender: m.senderId._id === user?.user?._id ? "user" : "other",
                             senderName: m.senderId.name,
                             senderId: m.senderId._id,
                             recipientId: c.id,
@@ -303,18 +302,16 @@ const ChatPage = () => {
         const handleMessage = (data: { message: Message; from: string }) => {
             const incoming: Message = {
                 ...data.message,
-                sender: data.message.senderId === user.user._id ? 'user' : 'other',
+                sender: data.message.senderId === user?.user?._id ? 'user' : 'other',
                 timestamp: new Date(data.message.timestamp)
             };
 
-            // Add message to messages per contact
             setMessages(prev => {
                 const updated = {
                     ...prev,
                     [data.from]: [...(prev[data.from] || []), incoming]
                 };
 
-                // Scroll to bottom after updating messages
                 setTimeout(() => {
                     if (messagesContainerRef.current) {
                         messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
@@ -327,8 +324,12 @@ const ChatPage = () => {
 
         socket.on("receive_message", handleMessage);
 
-        return () => socket.off("receive_message", handleMessage);
+        // ✅ cleanup must return void
+        return () => {
+            socket.off("receive_message", handleMessage);
+        };
     }, [socket, user]);
+
 
 
     // Update each contact's lastMessage whenever messages change
@@ -388,18 +389,22 @@ const ChatPage = () => {
         setSocket(s);
 
         s.on("connect", () => {
-            //// console.log("Socket connected:", s.id);
+            // console.log("Socket connected:", s.id);
             setSocketReady(true);
             if (!user.user?._id) {
                 // console.log("No user");
-                return
-            };
+                return;
+            }
             loadChatWithContact(user.user._id);
         });
 
-
-        return () => s.disconnect();
+        // Cleanup function must return void
+        return () => {
+            s.disconnect();
+            // explicitly void
+        };
     }, [user]);
+
 
     //// console.log(contacts);
 
@@ -457,7 +462,7 @@ const ChatPage = () => {
         });
 
         socket.once("messages_loaded", (msgs: any[]) => {
-            const parsed = msgs.map(m => ({
+            const parsed: any = msgs.map(m => ({
                 ...m,
                 sender: m.senderId === user?.user?._id ? 'user' : 'other',
                 timestamp: new Date(m.timestamp)
@@ -528,7 +533,8 @@ const ChatPage = () => {
             const lastMsgs = messages[selectedContact.id] || [];
             if (lastMsgs.length) setShowNewMessagesIndicator(true);
         }
-    }, [messages[selectedContact?.id]]); // only watch messages for selected contact
+    }, [messages, selectedContact?.id]);
+
 
 
     const scrollToBottom = () => {
@@ -615,7 +621,7 @@ const ChatPage = () => {
 
             {/* ---------------- Sidebar ---------------- */}
             <div className="w-80 bg-white border-r border-gray-200 flex flex-col shadow-lg">
-                <div className="p-4 border-b bg-gradient-to-r from-orange-500 to-orange-600">
+                <div className="p-4 border-b bg-linear-to-r from-orange-500 to-orange-600">
                     <h1 className="text-2xl font-bold text-white mb-3">Messages</h1>
 
                     <div className="relative">
@@ -702,7 +708,7 @@ const ChatPage = () => {
                                         <div className="max-w-[50%]">
                                             <p className="text-xs text-gray-500 mb-1">{msg.sender === 'user' ? 'You' : selectedContact.name}</p>
                                             <div className={`px-4 py-3 rounded-2xl shadow ${msg.sender === 'user' ? 'bg-orange-500 text-white rounded-br-md' : 'bg-white rounded-bl-md'}`}>
-                                                <p className="text-sm break-words whitespace-pre-wrap">{msg.text}</p>
+                                                <p className="text-sm wrap-break-word whitespace-pre-wrap">{msg.text}</p>
                                             </div>
                                             <p className={`text-xs text-gray-400 mt-1 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
                                                 {msg.timestamp.toLocaleString([], { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
@@ -741,7 +747,6 @@ const ChatPage = () => {
                                     {showEmojiPicker && (
                                         <EmojiPicker
                                             onEmojiClick={handleEmojiClick}
-                                            theme="light"
                                         />
                                     )}
                                 </div>

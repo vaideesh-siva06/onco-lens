@@ -32,11 +32,11 @@ const featuresData: Feature[] = [
 
 const FeaturesSection: React.FC = () => {
     return (
-        <section id="features" className="features relative w-screen min-h-screen flex flex-col items-center justify-center py-24 overflow-hidden bg-gradient-to-b from-gray-50 to-white">
+        <section id="features" className="features relative w-screen min-h-screen flex flex-col items-center justify-center py-24 overflow-hidden bg-linear-to-b from-gray-50 to-white">
 
             {/* Background decorations */}
             <div className="absolute inset-0 -z-10">
-                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-orange-50/50 to-transparent"></div>
+                <div className="absolute top-0 left-0 w-full h-32 bg-linear-to-b from-orange-50/50 to-transparent"></div>
                 <div className="absolute top-40 right-0 w-72 h-72 bg-orange-100/40 rounded-full blur-3xl"></div>
                 <div className="absolute bottom-40 left-0 w-96 h-96 bg-yellow-100/30 rounded-full blur-3xl"></div>
 
@@ -67,7 +67,7 @@ const FeaturesSection: React.FC = () => {
 
                 <h2 className="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight">
                     Everything you need to
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-500"> accelerate research</span>
+                    <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-500 to-amber-500"> accelerate research</span>
                 </h2>
 
                 <p className="mt-6 text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
@@ -89,10 +89,10 @@ const FeaturesSection: React.FC = () => {
                         <div className="relative bg-white rounded-3xl p-8 h-full border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-orange-100/50 transition-all duration-500 overflow-hidden">
 
                             {/* Hover gradient background */}
-                            <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500`}></div>
+                            <div className={`absolute inset-0 bg-linear-to-br ${feature.gradient} opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500`}></div>
 
                             {/* Icon container */}
-                            <div className={`relative w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center text-white mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500`}>
+                            <div className={`relative w-16 h-16 rounded-2xl bg-linear-to-br ${feature.gradient} flex items-center justify-center text-white mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500`}>
                                 {feature.icon}
                             </div>
 
@@ -117,7 +117,7 @@ const FeaturesSection: React.FC = () => {
                             </motion.div>
 
                             {/* Corner decoration */}
-                            <div className={`absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br ${feature.gradient} rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-2xl`}></div>
+                            <div className={`absolute -bottom-20 -right-20 w-40 h-40 bg-linear-to-br ${feature.gradient} rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-2xl`}></div>
                         </div>
                     </motion.div>
                 ))}

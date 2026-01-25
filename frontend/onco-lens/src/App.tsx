@@ -21,13 +21,12 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ConferenceCallPage from './pages/ConferenceCallPage';
 import InRoomPage from './pages/InRoomPage';
-import { io } from 'socket.io-client';
 import ChatPage from './pages/ChatPage';
 import { useUser } from '../context/UserContext';
 
 const App: React.FC = () => {
 
-  const { isAuthenticated, userId, loading, logout } = useAuth(); // ✅ get all from context
+  const { isAuthenticated, userId, loading } = useAuth(); // ✅ get all from context
   const location = useLocation();
   const isMeetingPage = location.pathname.startsWith("/meeting/");
   const hideFooter = isMeetingPage;
@@ -108,7 +107,7 @@ const App: React.FC = () => {
           {/* Protected route */}
           <Route element={<ProtectedRoute />}>
             <Route path="/:id/dashboard" element={
-              <ProjectsProvider value={{ projects: [], addProject: () => { }, fetchProjects: () => { }, deleteProject: () => { }, loading: true }}>
+              <ProjectsProvider>
                 <Dashboard />
               </ProjectsProvider>
             } />

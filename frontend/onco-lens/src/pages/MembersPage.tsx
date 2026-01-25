@@ -3,7 +3,7 @@ import { useProjects } from "../../context/ProjectsContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaTrash } from "react-icons/fa";
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useUser } from "../../context/UserContext";
 
@@ -21,7 +21,7 @@ interface Project {
 
 const MembersPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const { fetchProjects, setProjects, projects } = useProjects();
+    const { fetchProjects } = useProjects();
     const [project, setProject] = useState<Project | null>(null);
     const [email, setEmail] = useState("");
     const user = useUser();
@@ -31,8 +31,16 @@ const MembersPage: React.FC = () => {
     useEffect(() => {
         const loadProject = async () => {
             const allProjects = await fetchProjects(); // MUST return array
-            const found = allProjects.find((p: Project) => p._id === id);
-            setProject(found || null);
+            // const found = allProjects.find((p: Project) => p._id === id);
+            const found = allProjects.find(p => p._id === id);
+
+            if (found && user?.user?._id) {
+                setProject({ ...found, user: user.user._id });
+            }
+
+           // setProject(found ? { ...found, user: someUserValue } : null);
+
+
         };
 
         loadProject();
@@ -46,6 +54,11 @@ const MembersPage: React.FC = () => {
         // console.log("Adding member:", email, id);
 
         if (!email) return;
+
+        if (!project) {
+            toast.error("Project not found!");
+            return;
+        }
 
         try {
             const member = await user.getUserByEmail(email);
@@ -67,11 +80,11 @@ const MembersPage: React.FC = () => {
             }
 
             // Make POST request
-            const response = await axios.post(
-                `http://localhost:8000/api/project/${id}/member`,
-                { email },
-                { withCredentials: true, headers: { "Content-Type": "application/json" } }
-            );
+            // const response = await axios.post(
+            //     `http://localhost:8000/api/project/${id}/member`,
+            //     { email },
+            //     { withCredentials: true, headers: { "Content-Type": "application/json" } }
+            // );
 
             // console.log("POST response:", response.data);
 

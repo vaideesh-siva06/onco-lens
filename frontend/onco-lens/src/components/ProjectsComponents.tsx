@@ -1,4 +1,3 @@
-import { useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useProjects } from '../../context/ProjectsContext';
 import NoProjects from './NoProjects';
@@ -8,13 +7,12 @@ import { useUser } from '../../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 
 const ProjectsComponents = () => {
-    const { projects, fetchProjects, deleteProject } = useProjects();
+    const { projects, deleteProject } = useProjects();
     const { openProjectModal, openProjectModalForEdit } = useModal();
     const { user } = useUser();
     const navigate = useNavigate();
-    const location = useLocation();
 
-    const [showLoading, setShowLoading] = useState(false);
+    const [showLoading, _] = useState(false);
     const [isGrid, setIsGrid] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -100,7 +98,7 @@ const ProjectsComponents = () => {
         return (
             <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
                 <div className="flex flex-col items-center">
-                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-orange-500 border-b-4 border-gray-200 mb-2"></div>
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-orange-500 border-b-4 mb-2"></div>
                     <p className="text-gray-600 text-lg text-center">Loading dashboard...</p>
                 </div>
             </div>
@@ -142,7 +140,7 @@ const ProjectsComponents = () => {
                         {currentProjects.map(project => (
                             <div
                                 key={`${project._id}`}
-                                className={`relative flex flex-col justify-between bg-gradient-to-br from-white to-orange-50 shadow-[0_4px_20px_rgba(0,0,0,0.05)] rounded-2xl p-6 border border-gray-100 hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:scale-[1.02] transition-all duration-300 cursor-pointer ${!isGrid ? 'flex-row items-center' : ''}`}
+                                className={`relative flex flex-col justify-between bg-linear-to-br from-white to-orange-50 shadow-[0_4px_20px_rgba(0,0,0,0.05)] rounded-2xl p-6 border border-gray-100 hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:scale-[1.02] transition-all duration-300 cursor-pointer ${!isGrid ? 'flex-row items-center' : ''}`}
                             >
                                 {/* Floating Action Buttons */}
                                 <div className="absolute top-4 right-4 flex flex-col gap-2">

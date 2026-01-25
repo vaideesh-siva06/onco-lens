@@ -23,7 +23,7 @@ export interface Project {
 const ProjectPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const [project, setProject] = useState<Project | null>(null);
+    const [project, setProject] = useState<Project | any>();
     const [activeTab, setActiveTab] = useState<string>('Home');
     const user = useUser();
 
@@ -68,14 +68,13 @@ const ProjectPage: React.FC = () => {
     // Render the selected tab
     const renderTabContent = () => {
         switch (activeTab) {
-            case 'Home': return <HomePage project={project} />;
-            case 'Files': return <DataPage />;
+            case 'Home': return <ProjectHomePage project={project} />;
             case 'Chat': return <ChatPage />;
             case 'Calendar': return <CalendarPage />;
             case 'Members': return <MembersPage />;
             case 'Settings': return <SettingsPage />;
             case 'OncoLens AI': return <OncoLensAIPage />;
-            default: return <DataPage />;
+            default: return <HomePage />;
         }
     };
 

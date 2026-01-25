@@ -1,8 +1,8 @@
 // components/ProjectPageSidebar.tsx
 import React from 'react';
-import { FaUsers, FaComments, FaCog, FaBrain, FaHome, FaFile } from 'react-icons/fa';
-import { useUser } from '../../context/UserContext';
-import { useProjects } from '../../context/ProjectsContext';
+import { FaUsers, FaComments, FaCog, FaBrain, FaHome } from 'react-icons/fa';
+// import { useUser } from '../../context/UserContext';
+// import { useProjects } from '../../context/ProjectsContext';
 
 interface ProjectPageSidebarProps {
     active?: string; // optional, can highlight current tab

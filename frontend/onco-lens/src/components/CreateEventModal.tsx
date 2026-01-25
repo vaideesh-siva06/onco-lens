@@ -48,7 +48,9 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
     // Prevent scroll behind modal
     useEffect(() => {
         document.body.style.overflow = isOpen ? "hidden" : "";
-        return () => (document.body.style.overflow = "");
+        return () => {
+            document.body.style.overflow = "";
+        };
     }, [isOpen]);
 
     if (!isOpen) return null;

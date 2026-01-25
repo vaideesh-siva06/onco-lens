@@ -7,7 +7,7 @@ interface OncoLensAIUploadProps {
 }
 
 const OncoLensAIUpload: React.FC<OncoLensAIUploadProps> = ({ onCreate }) => {
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [_, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [prediction, setPrediction] = useState<any>(null);
 
@@ -85,7 +85,10 @@ const OncoLensAIUpload: React.FC<OncoLensAIUploadProps> = ({ onCreate }) => {
                             {prediction?.prediction || "N/A"}
                             <br /><br /><br />
                             <span className="font-semibold">Confidence:</span>{" "}
-                            {parseFloat(prediction?.confidence).toFixed(2) || "N/A"}%
+                            {(parseFloat((prediction?.confidence_percent).toFixed(2))) || "N/A"}%
+                            <br />
+                            <span className="font-semibold">Confidence Level:</span>{" "}
+                            {prediction?.confidence_level}
                         </p>
                     </div>
 

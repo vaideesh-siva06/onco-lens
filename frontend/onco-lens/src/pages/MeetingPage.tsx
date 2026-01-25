@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FaVideo, FaLink, FaPlay, FaUserPlus, FaTrash, FaSignOutAlt, FaSign } from "react-icons/fa";
+import { FaVideo, FaLink, FaPlay, FaUserPlus, FaTrash, FaSignOutAlt } from "react-icons/fa";
 import CreateMeetingModal from "../components/CreateMeetingModal";
 import { useProjects } from "../../context/ProjectsContext";
 import { useUser } from "../../context/UserContext";
@@ -21,7 +21,10 @@ const MeetingPage: React.FC = () => {
     }, [user?._id]);
 
     const handleCreateMeeting = async (meeting: { name: string; date: string }) => {
-        await createMeeting(meeting);
+        await createMeeting({
+            ...meeting,
+            invitees: []
+        });
     };
 
     const handleStartMeeting = async (meeting: any) => {
@@ -146,7 +149,10 @@ const MeetingPage: React.FC = () => {
                                             <FaPlay /> Join
                                             </button>
                                             <button
-                                            onClick={() => handleDeleteParticipant(meeting._id, user?.email)}
+                                            onClick={() => {
+                                                if (!user?.email) return;
+                                                handleDeleteParticipant(meeting._id, user?.email)
+                                            }}
                                             className="flex items-center gap-1 bg-transparent text-black border border-red-300 hover:text-white px-3 py-1 rounded hover:bg-red-700 transition"
                                             >
                                             <FaSignOutAlt /> Leave
@@ -181,7 +187,7 @@ const MeetingPage: React.FC = () => {
                                         meeting.invitees.map(email => (
                                             <span key={`${meeting._id}-${email}`} className="relative group bg-gray-100 px-2 py-1 rounded-full text-sm flex items-center">
                                                 {email}
-                                                {(user?.email === meeting.adminEmail || email === user.email) && (
+                                                {(user?.email === meeting.adminEmail || email === user?.email) && (
                                                     <button
                                                         onClick={() => handleDeleteParticipant(meeting._id, email)}
                                                         className="ml-2 text-gray-500 opacity-0 group-hover:opacity-100 hover:text-red-600 transition text-xs"
@@ -199,7 +205,9 @@ const MeetingPage: React.FC = () => {
                                 {isAdmin(meeting) && (
                                     <div className="flex gap-2 mt-2">
                                         <input
-                                            ref={el => (inputRefs.current[meeting._id] = el)}
+                                            ref={el => {
+                                                inputRefs.current[meeting._id] = el;
+                                            }}
                                             type="email"
                                             placeholder="Add participant email"
                                             value={emailInputs[meeting._id] || ""}

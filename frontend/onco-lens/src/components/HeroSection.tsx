@@ -67,7 +67,7 @@ const HeroSection: React.FC = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3, duration: 0.8 }}
                 >
-                    Onco<span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-300 to-yellow-200">Lens</span>
+                    Onco<span className="text-transparent bg-clip-text bg-linear-to-r from-orange-300 to-yellow-200">Lens</span>
                 </motion.h1>
 
                 <motion.p
@@ -95,7 +95,7 @@ const HeroSection: React.FC = () => {
                                 Get Started
                                 <FaPlay className="text-sm group-hover:translate-x-1 transition-transform" />
                             </span>
-                            <div className="absolute inset-0 bg-gradient-to-r from-orange-100 to-yellow-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div className="absolute inset-0 bg-linear-to-r from-orange-100 to-yellow-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </motion.button>
                     </Link>
 
@@ -136,7 +136,7 @@ const HeroSection: React.FC = () => {
                     ].map((item, i) => (
                         <div
                             key={i}
-                            className="text-center max-w-[240px] px-6 py-5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10"
+                            className="text-center max-w-60 px-6 py-5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10"
                         >
                             <div className="mb-3 flex justify-center">{item.icon}</div>
                             <div className="text-lg md:text-xl font-semibold text-white">

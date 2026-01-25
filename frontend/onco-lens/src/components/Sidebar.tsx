@@ -1,4 +1,4 @@
-import { FaBrain, FaCalendarAlt, FaFolderOpen, FaPlus, FaUsers, FaBars, FaTimes } from "react-icons/fa";
+import { FaBrain, FaFolderOpen, FaPlus, FaUsers, FaBars, FaTimes } from "react-icons/fa";
 import { useUser } from "../../context/UserContext";
 import { useState } from "react";
 import { useModal } from "../../context/ModalContext";
@@ -15,7 +15,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setActivePage, activePage }) => {
 
     const toggleSidebar = () => setIsOpen(!isOpen);
 
-    const handleNavClick = (page: 'projects' | 'meetings' | 'calendar' | 'oncolensai') => {
+    const handleNavClick = (page: 'projects' | 'meetings' | 'oncolensai') => {
         setActivePage(page);
         setIsOpen(false); // Close sidebar on mobile after selection
     };
@@ -38,9 +38,9 @@ const Sidebar: React.FC<SidebarProps> = ({ setActivePage, activePage }) => {
 
             {/* Sidebar */}
             <div
-                className={`fixed left-0 w-128 md:w-64 bg-white border-r border-gray-200 z-40 overflow-y-auto transform transition-transform duration-300 ease-in-out
+                className={`fixed left-0 w-lg md:w-64 bg-white border-r border-gray-200 z-40 overflow-y-auto transform transition-transform duration-300 ease-in-out
                     ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-                    md:translate-x-0 md:static md:flex md:flex-col md:h-screen
+                    md:translate-x-0 md:static md:flex md:flex-col
                     top-16 h-[calc(100vh-4rem)]
                     md:top-28 md:h-[calc(100vh-4rem)]`}
             >

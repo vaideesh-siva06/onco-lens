@@ -15,7 +15,7 @@ interface UserContextType {
     getUserInfo: (id: string) => Promise<void>;
     updateUser: (id: string, data: { name: string; email: string; password?: string }) => Promise<void>;
     loading: boolean;
-    getUserByEmail: (email: string) => Promise<void>;
+    getUserByEmail: (email: string) => Promise<User | null>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);

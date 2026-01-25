@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { LuTriangleAlert, LuRocket } from "react-icons/lu";
@@ -126,7 +125,7 @@ const ProblemSolutionSection = () => {
                             whileTap={{ scale: 0.98 }}
                         >
                             <span className="relative z-10">Get Started for Free</span>
-                            <div className="absolute inset-0 bg-gradient-to-r from-orange-100 to-yellow-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div className="absolute inset-0 bg-linear-to-r from-orange-100 to-yellow-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </motion.button>
                     </Link>
                 </motion.div>
