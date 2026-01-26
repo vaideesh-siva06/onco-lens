@@ -80,7 +80,7 @@ const FeaturesSection: React.FC = () => {
                             from-orange-600
                             via-amber-400
                             to-orange-600
-                            bg-[length:200%_100%]
+                            bg-size-[200%_100%]
                         "
                         animate={{
                             backgroundPositionX: ['0%', '200%'],
