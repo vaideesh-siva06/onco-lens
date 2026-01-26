@@ -5,7 +5,7 @@ import { useDocuments } from '../../context/DocumentsContext';
 import { useUser } from '../../context/UserContext';
 import { FaTrash } from 'react-icons/fa';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -58,6 +58,16 @@ const ProjectHomePage = ({ project }: { project: Project }) => {
 
     return (
         <div>
+            <ToastContainer
+                position="top-center"
+                autoClose={2000}
+                hideProgressBar
+                newestOnTop
+                pauseOnHover
+                theme="light"
+                closeButton={false}
+            />
+            
             <h1 className="text-3xl font-bold mb-2">{project.name}</h1>
             <p className="text-gray-700 mb-4">{project.description}</p>
 

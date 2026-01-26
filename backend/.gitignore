@@ -15,6 +15,7 @@ api/__pycache__/
 
 # Trained models and large datasets
 api/model/multi_cancer/
+api/model/multi_cancer_balanced/
 api/model/*.h5
 api/model/*.pt
 api/model/*.pkl

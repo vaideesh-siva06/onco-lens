@@ -13,6 +13,7 @@ const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
     if (loading) return <div>Loading...</div>;
 
     if (isAuthenticated && userId) {
+        console.log(userId);
         return <Navigate to={`/${userId}/dashboard`} replace />;
     }
 

@@ -4,9 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import keras
 import numpy as np
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 import io
-from tensorflow.keras.applications.resnet50 import preprocess_input
+from keras.applications.resnet50 import preprocess_input
 
 app = FastAPI()
 
@@ -23,12 +23,11 @@ app.add_middleware(
     allow_headers=["*"],        
 )
 
-class_names = ['brain_glioma', 'brain_menin', 'brain_no_tumor', 'brain_tumor', 'breast_benign', 'breast_malignant', 'cervix_dyk', 'cervix_koc', 'cervix_mep', 'cervix_pab', 'colon_aca', 'colon_bnt', 'kidney_normal', 'kidney_tumor', 'lung_aca', 'lung_bnt', 'lung_scc']
+class_names = ['brain_glioma', 'brain_menin', 'brain_tumor', 'breast_benign', 'breast_malignant', 'cervix_dyk', 'cervix_koc', 'cervix_mep', 'cervix_pab', 'colon_aca', 'colon_bnt', 'kidney_normal', 'kidney_tumor', 'lung_aca', 'lung_bnt', 'lung_scc']
 
 class_descriptions = {
     "brain_glioma": "Tumor from supportive glial cells in the brain; can be benign or malignant. (brain_glioma)",
     "brain_menin": "Meningioma — usually benign tumor of the protective membranes around the brain. (brain_menin)",
-    "brain_no_tumor": "Normal brain tissue with no detectable tumor or abnormal growth. (brain_no_tumor)",
     "brain_tumor": "General brain tumor — abnormal cell growth in brain tissue. (brain_tumor)",
     "breast_benign": "Non‑cancerous breast tumor that does not invade surrounding tissue. (breast_benign)",
     "breast_malignant": "Cancerous breast tumor that can invade nearby tissue and spread. (breast_malignant)",
@@ -51,7 +50,6 @@ print(model)
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     try:
-        # Read uploaded file
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))
     except UnidentifiedImageError:
@@ -61,20 +59,18 @@ async def predict(file: UploadFile = File(...)):
 
     try:
         # Convert grayscale to RGB
-        if image.mode != "L":
-            image = image.convert("L")
-        image = image.resize((128, 128))
-        img_array = np.array(image)                # shape (128,128)
-        img_array = np.stack((img_array,)*3, axis=-1)  # shape (128,128,3)
-        img_array = np.expand_dims(img_array, axis=0)  # shape (1,128,128,3)
-
-        # Apply ResNet preprocessing
+        if image.mode != "RGB":
+            image = image.convert("RGB")
+        
+        image = image.resize((256, 256))  # or (128,128) depending on your model
+        img_array = np.array(image)       # shape (256,256,3)
+        img_array = np.expand_dims(img_array, axis=0)  # shape (1,256,256,3)
         img_array = preprocess_input(img_array.astype(np.float32))
 
         # Predict
         prediction = model.predict(img_array)
         pred_index = int(np.argmax(prediction[0]))
-        pred_class_name = class_names[pred_index]  # e.g., "brain_menin"
+        pred_class_name = class_names[pred_index]
         pred_description = class_descriptions[pred_class_name]
         confidence = round(float(np.max(prediction[0]) * 100), 2)
 
@@ -83,9 +79,10 @@ async def predict(file: UploadFile = File(...)):
             "description": pred_description,
             "confidence": confidence
         }
-    
+
     except Exception as e:
         return {"error": f"Error processing image for prediction: {e}"}
+
 
 
 if __name__ == '__main__':

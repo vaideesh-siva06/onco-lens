@@ -751,13 +751,15 @@ const ChatPage = () => {
                                     )}
                                 </div>
 
-                                <input
+                                <textarea
                                     value={newMessage}
                                     onChange={(e) => setNewMessage(e.target.value)}
-                                    onKeyPress={handleKeyPress}
+                                    onKeyDown={handleKeyPress}
                                     placeholder="Type a message..."
-                                    className="flex-1 px-4 py-3 border rounded-full"
+                                    rows={4}
+                                    className="flex-1 px-4 py-3 border rounded-2xl resize-none"
                                 />
+
 
                                 <button
                                     onClick={handleSendMessage}

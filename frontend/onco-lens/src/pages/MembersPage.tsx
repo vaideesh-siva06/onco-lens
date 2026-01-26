@@ -3,7 +3,7 @@ import { useProjects } from "../../context/ProjectsContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaTrash } from "react-icons/fa";
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useUser } from "../../context/UserContext";
 
@@ -147,6 +147,15 @@ const MembersPage: React.FC = () => {
 
     return (
         <div>
+            <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar
+        newestOnTop
+        pauseOnHover
+        theme="light"
+        closeButton={false}
+      />
             <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
                 <h2 className="text-3xl font-semibold mb-6 text-gray-800">Team Members</h2>
 
