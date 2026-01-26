@@ -10,25 +10,29 @@ type Feature = {
 };
 
 const featuresData: Feature[] = [
-    {
-        title: 'Model Prediction',
-        description: 'Leverage advanced AI models to predict patient outcomes, treatment responses, and potential disease progression with high accuracy.',
-        icon: <FaBrain className="text-3xl" />,
-        gradient: 'from-orange-500 to-amber-500',
-    },
-    {
-        title: 'Collaboration Hub',
-        description: 'Facilitate seamless collaboration between researchers and clinicians by sharing documents, scheduling virtual meetings, and tracking project progress in real-time.',
-        icon: <FaUsers className="text-3xl" />,
-        gradient: 'from-amber-500 to-yellow-500',
-    },
-    {
-        title: 'Data Management',
-        description: 'Organize, store, and analyze large-scale oncology datasets efficiently, ensuring secure access and easy integration with analytical tools.',
-        icon: <FaDatabase className="text-3xl" />,
-        gradient: 'from-yellow-500 to-orange-400',
-    },
+  {
+    title: 'AI Model Predictions',
+    description:
+      'Run advanced machine learning models to analyze oncology data, predict patient outcomes, and evaluate treatment responses with clinically meaningful insights.',
+    icon: <FaBrain className="text-3xl" />,
+    gradient: 'from-orange-500 to-amber-500',
+  },
+  {
+    title: 'Research Collaboration',
+    description:
+      'Create research projects, collaborate with team members in real time, discuss findings via integrated chat, and keep everyone aligned across institutions.',
+    icon: <FaUsers className="text-3xl" />,
+    gradient: 'from-amber-500 to-yellow-500',
+  },
+  {
+    title: 'Centralized Data & Documents',
+    description:
+      'Securely manage oncology datasets, research documents, and reports with seamless Google Drive integration and structured access control.',
+    icon: <FaDatabase className="text-3xl" />,
+    gradient: 'from-yellow-500 to-orange-400',
+  },
 ];
+
 
 const FeaturesSection: React.FC = () => {
     return (
@@ -67,7 +71,29 @@ const FeaturesSection: React.FC = () => {
 
                 <h2 className="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight">
                     Everything you need to
-                    <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-500 to-amber-500"> accelerate research</span>
+                    <motion.span
+                        className="
+                            inline-block
+                            text-transparent
+                            bg-clip-text
+                            bg-linear-to-r
+                            from-orange-600
+                            via-amber-400
+                            to-orange-600
+                            bg-[length:200%_100%]
+                        "
+                        animate={{
+                            backgroundPositionX: ['0%', '200%'],
+                        }}
+                        transition={{
+                            duration: 4,
+                            repeat: Infinity,
+                            ease: 'linear',
+                        }}
+                        >
+                        accelerate research
+                    </motion.span>
+
                 </h2>
 
                 <p className="mt-6 text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
@@ -104,17 +130,6 @@ const FeaturesSection: React.FC = () => {
                             <p className="text-gray-600 leading-relaxed">
                                 {feature.description}
                             </p>
-
-                            {/* Learn more link */}
-                            <motion.div
-                                className="mt-6 flex items-center gap-2 text-orange-500 font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                                whileHover={{ x: 5 }}
-                            >
-                                <span className="text-sm">Learn more</span>
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                </svg>
-                            </motion.div>
 
                             {/* Corner decoration */}
                             <div className={`absolute -bottom-20 -right-20 w-40 h-40 bg-linear-to-br ${feature.gradient} rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-2xl`}></div>

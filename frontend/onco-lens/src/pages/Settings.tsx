@@ -132,79 +132,218 @@ const Settings = () => {
         }
     };
 
+   const reconnectGoogleAccount = async () => {
+        if (!user?._id) return;
+
+        try {
+            const res = await axios.get(
+            `http://localhost:8000/api/user/auth/google/reconnect`,
+            { params: { userId: user._id },
+              withCredentials: true
+            }
+            
+            );
+
+            const { url } = res.data;
+            if (!url) throw new Error("No OAuth URL returned from backend");
+
+            const width = 500;
+            const height = 600;
+            const left = window.screenX + (window.innerWidth - width) / 2;
+            const top = window.screenY + (window.innerHeight - height) / 2;
+
+            const popup = window.open(
+            url,
+            "Google OAuth",
+            `width=${width},height=${height},left=${left},top=${top}`
+            );
+
+            console.log(popup);
+
+            const listener = (event: MessageEvent) => {
+            if (!event.data.googleConnected) return;
+
+                toast.success("Google account connected successfully!");
+
+                setUser(prev => {
+                    if (!prev) return prev; // do nothing if user is null
+                    return {
+                        ...prev,
+                        googleAccessToken: event.data.accessToken,
+                    };
+                });
+
+
+                window.removeEventListener("message", listener);
+
+                // ✅ Do NOT navigate, the user is already on the main page
+                // navigate(`/${user._id}/dashboard`);  <-- remove this
+            };
+
+            //window.addEventListener("message", listener);
+
+        } catch (error: any) {
+            console.error("Failed to reconnect Google:", error);
+            toast.error("Failed to initiate Google reconnect");
+        }
+    };
+
+
+
+
     return (
         <div className="w-11/12 md:w-10/12 lg:w-8/12 mx-auto mt-40">
             <ToastContainer
-                position="top-center"
-                autoClose={2000}
-                hideProgressBar
-                newestOnTop
-                pauseOnHover
-                theme="light"
-                closeButton={false}
+            position="top-center"
+            autoClose={2000}
+            hideProgressBar
+            newestOnTop
+            pauseOnHover
+            theme="light"
+            closeButton={false}
             />
-            <h1 className="text-2xl font-bold text-gray-800 mb-6">Settings</h1>
 
-            <form onSubmit={handleUpdate} className="space-y-4">
+            {/* Page Header */}
+            <div className="mb-10">
+            <h1 className="text-3xl font-extrabold text-gray-900">Settings</h1>
+            <p className="mt-2 text-gray-500">
+                Manage your account information and connected services.
+            </p>
+            </div>
+
+            {/* Settings Card */}
+            <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
+            <form onSubmit={handleUpdate} className="space-y-6">
                 {/* Name */}
                 <div>
-                    <label htmlFor="name" className="block text-gray-700 mb-1">Name</label>
-                    <input
-                        type="text"
-                        id="name"
-                        ref={nameRef}
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
-                        required
-                    />
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                    Name
+                </label>
+                <input
+                    type="text"
+                    id="name"
+                    ref={nameRef}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="
+                    w-full px-4 py-2.5
+                    border border-gray-300 rounded-xl
+                    focus:outline-none focus:ring-2 focus:ring-orange-400
+                    transition
+                    "
+                    required
+                />
                 </div>
 
                 {/* Email */}
                 <div>
-                    <label htmlFor="email" className="block text-gray-700 mb-1">Email</label>
-                    <input
-                        type="email"
-                        id="email"
-                        ref={emailRef}
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
-                        required
-                    />
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                </label>
+                <input
+                    type="email"
+                    id="email"
+                    ref={emailRef}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="
+                    w-full px-4 py-2.5
+                    border border-gray-300 rounded-xl
+                    focus:outline-none focus:ring-2 focus:ring-orange-400
+                    transition
+                    "
+                    required
+                />
                 </div>
 
                 {/* Password */}
                 <div>
-                    <label htmlFor="password" className="block text-gray-700 mb-1">Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password || ''}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="********"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
-                    />
-                    <p className="text-gray-400 text-sm mt-1">Leave blank to keep current password</p>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                    Password
+                </label>
+                <input
+                    type="password"
+                    id="password"
+                    value={password || ''}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="********"
+                    className="
+                    w-full px-4 py-2.5
+                    border border-gray-300 rounded-xl
+                    focus:outline-none focus:ring-2 focus:ring-orange-400
+                    transition
+                    "
+                />
+                <p className="text-gray-400 text-sm mt-1">
+                    Leave blank to keep current password
+                </p>
                 </div>
 
+                {/* Primary Action */}
                 <button
-                    type="submit"
-                    className="bg-orange-400 text-white px-6 py-2 rounded-md hover:bg-orange-500 transition w-full cursor-pointer"
+                type="submit"
+                className="
+                    w-full py-3 rounded-xl
+                    bg-orange-500 text-white font-medium
+                    hover:bg-orange-600
+                    transition
+                "
                 >
-                    Update Settings
+                Update Settings
                 </button>
             </form>
+            </div>
+
+            {/* Integrations */}
+            <div className="mt-8 bg-white border border-gray-200 rounded-2xl shadow-sm p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-1">
+                Integrations
+            </h2>
+            <p className="text-sm text-gray-500 mb-4">
+                Connect external services to enhance your workflow.
+            </p>
 
             <button
                 type="button"
-                className="bg-red-400 text-white px-6 py-2 rounded-md hover:bg-red-500 transition w-full cursor-pointer mt-4"
+                className="
+                w-full py-3 rounded-xl
+                bg-blue-500 text-white font-medium
+                hover:bg-blue-600
+                transition
+                "
+                onClick={async () => {
+                await reconnectGoogleAccount();
+                }}
+            >
+                Connect Google Account
+            </button>
+            </div>
+
+            {/* Danger Zone */}
+            <div className="mt-8 border border-red-200 bg-red-50 rounded-2xl p-6">
+            <h2 className="text-lg font-semibold text-red-600 mb-1">
+                Danger Zone
+            </h2>
+            <p className="text-sm text-red-500 mb-4">
+                This action is permanent and cannot be undone.
+            </p>
+
+            <button
+                type="button"
+                className="
+                w-full py-3 rounded-xl
+                bg-red-500 text-white font-medium
+                hover:bg-red-600
+                transition
+                "
                 onClick={handleDelete}
             >
                 Delete Account
             </button>
+            </div>
         </div>
-    );
+        );
+
 };
 
 export default Settings;

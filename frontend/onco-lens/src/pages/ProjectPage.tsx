@@ -56,7 +56,8 @@ const ProjectPage: React.FC = () => {
                 const res = await axios.get(`http://localhost:8000/api/project/${id}`, { withCredentials: true });
                 setProject(res.data);
             } catch (error) {
-                // console.error('Failed to fetch project', error);
+                console.error('Failed to fetch project', error);
+                navigate('/not-found');
             }
         };
 
@@ -89,7 +90,7 @@ const ProjectPage: React.FC = () => {
             <div className="flex-1">
                 {/* Back Button */}
                 <button
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate(`/${user.user?._id}/dashboard`)}
                     className="mb-6 px-4 py-2 text-orange-500 rounded-lg hover:bg-gray-300 transition"
                 >
                     ← Back

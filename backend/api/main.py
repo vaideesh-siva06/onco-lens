@@ -74,16 +74,16 @@ async def predict(file: UploadFile = File(...)):
         # Predict
         prediction = model.predict(img_array)
         pred_index = int(np.argmax(prediction[0]))
-        pred_class = class_descriptions[class_names[pred_index]]
-        confidence = float(np.max(prediction[0]) * 100)
+        pred_class_name = class_names[pred_index]  # e.g., "brain_menin"
+        pred_description = class_descriptions[pred_class_name]
+        confidence = round(float(np.max(prediction[0]) * 100), 2)
 
-        # Return prediction and description
         return {
-            "prediction": pred_class,
-            "description": class_descriptions.get(pred_class, "No description available."),
+            "prediction": pred_class_name,
+            "description": pred_description,
             "confidence": confidence
         }
-
+    
     except Exception as e:
         return {"error": f"Error processing image for prediction: {e}"}
 

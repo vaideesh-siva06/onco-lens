@@ -110,52 +110,62 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!user?._id) return;
+            e.preventDefault();
+            if (!user?._id) return;
 
-        const finalFocus = focus === 'Other' ? customFocus : focus;
+            const finalFocus = focus === 'Other' ? customFocus : focus;
 
-        try {
-            if (editMode && projectData) {
-                // Just call the context function - it handles the API call
-                await updateProject(projectData._id, {
-                    name,
-                    description,
-                    focus: finalFocus,
-                    cancerTypes,
-                    status,
-                    teamEmails,
-                });
-                toast.success("Project updated successfully");
-            } else {
-                // CREATE new project
-                const res = await axios.post(
-                    `http://localhost:8000/api/project/${user._id}`,
-                    {
+            try {
+                if (editMode && projectData) {
+                    // Updating an existing project
+                    await updateProject(projectData._id, {
                         name,
                         description,
                         focus: finalFocus,
                         cancerTypes,
                         status,
                         teamEmails,
-                        adminEmail: user.email,
-                        adminName: user.name
-                    },
-                    { withCredentials: true }
-                );
+                    });
+                    toast.success("Project updated successfully");
+                } else {
+                    // CREATE new project
+                    const res = await axios.post(
+                        `http://localhost:8000/api/project/${user._id}`,
+                        {
+                            name,
+                            description,
+                            focus: finalFocus,
+                            cancerTypes,
+                            status,
+                            teamEmails,
+                            adminEmail: user.email,
+                            adminName: user.name
+                        },
+                        { withCredentials: true }
+                    );
 
-                addProject(res.data);
-                toast.success("Project created successfully");
+                    // ------------------ Google OAuth redirect ------------------
+                    if (res.data.requiresGoogleAuth && res.data.redirect) {
+                        toast.info("Please connect your Google account first...");
+                        window.location.href = res.data.redirect; // redirect to backend OAuth
+                        
+                    }
+
+                    // ------------------ Project created successfully ------------------
+                    addProject(res.data);
+                    toast.success("Project created successfully");
+                }
+
+                resetForm();
+                onClose();
+
+            } catch (error: any) {
+                console.error("Error saving project", error);
+                toast.error(editMode ? "Failed to update project" : "Failed to create project");
             }
+        };
 
-            resetForm();
-            onClose();
 
-        } catch (error) {
-            console.error("Error saving project", error);
-            toast.error(editMode ? "Failed to update project" : "Failed to create project");
-        }
-    };
 
     const toggleCancerType = (type: string) => {
         if (cancerTypes.includes(type)) {

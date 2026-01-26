@@ -19,7 +19,7 @@ const auth = new google.auth.GoogleAuth({
 
 const drive = google.drive({ version: 'v3', auth });
 
-export const getProjectController = async (req, res) => {
+export const getProjectController = async (req: any, res: any) => {
     try {
         const { id } = req.params;
         const cacheKey = `project:${id}`;
@@ -43,7 +43,7 @@ export const getProjectController = async (req, res) => {
 };
 
 
-export const getAllProjectsController = async (req, res) => {
+export const getAllProjectsController = async (req: any, res: any) => {
     try {
         const { userId, email } = req.query;
         if (!userId || !email) {
@@ -74,62 +74,9 @@ export const getAllProjectsController = async (req, res) => {
 
 
 
-export const createProjectController = async (req, res) => {
-  try {
-    const { id } = req.params; // admin user ID
-    const { name, description, focus, cancerTypes, status, teamEmails } = req.body;
-
-    const adminUser = await UserModel.findById(id);
-    if (!adminUser?.googleAccessToken || !adminUser?.googleRefreshToken) {
-      return res.status(400).json({ message: "Admin has not connected Google account" });
-    }
-
-    const oauth2Client = new google.auth.OAuth2(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET
-    );
-    oauth2Client.setCredentials({
-      access_token: adminUser.googleAccessToken,
-      refresh_token: adminUser.googleRefreshToken
-    });
-
-    const drive = google.drive({ version: 'v3', auth: oauth2Client });
-
-    // Create project folder in admin's Drive
-    const folder = await drive.files.create({
-      requestBody: {
-        name: `onco-lens-${id}`,
-        mimeType: 'application/vnd.google-apps.folder',
-      },
-      fields: 'id'
-    });
-
-    const project = await ProjectModel.create({
-      name,
-      description,
-      focus,
-      cancerTypes,
-      status,
-      teamEmails,
-      adminId: id,
-      adminName: name,
-      adminEmail: adminUser.email,
-      driveFolderId: folder.data.id
-    });
-
-    await invalidateProjectLists(redis);
-
-    res.status(201).json(project);
-  } catch (error: any) {
-    console.error('Create project error:', error.response?.data || error.message || error);
-    res.status(500).json({ message: "Error creating project", error: error.message });
-  }
-};
 
 
-
-
-export const deleteProjectController = async (req, res) => {
+export const deleteProjectController = async (req: any, res: any) => {
   try {
     const { id, userId, userEmail } = req.body;
 
@@ -161,6 +108,12 @@ export const deleteProjectController = async (req, res) => {
       await ProjectModel.findByIdAndDelete(id);
 
     } else {
+
+      if (project.teamEmails == null)
+      {
+        return res.status(400).json({ message: "No team emails found." })
+      }
+
       // Non-admin: remove self from team
       if (!project.teamEmails.includes(userEmail)) {
         return res.status(400).json({ message: "User not part of project" });
@@ -187,7 +140,7 @@ export const deleteProjectController = async (req, res) => {
 };
 
 
-export const updateProjectController = async (req, res) => {
+export const updateProjectController = async (req: any, res: any) => {
     try {
         const { id } = req.params;
 
@@ -211,7 +164,7 @@ export const updateProjectController = async (req, res) => {
 };
 
 
-export const addMemberController = async (req, res) => {
+export const addMemberController = async (req: any, res: any) => {
   try {
     const { id } = req.params; // project ID
     const { email } = req.body;
@@ -220,6 +173,11 @@ export const addMemberController = async (req, res) => {
 
     const project = await ProjectModel.findById(id);
     if (!project) return res.status(404).json({ message: "Project not found" });
+
+    if (project.teamEmails == null)
+    {
+      return res.status(400).json({ message: "No team emails found." })
+    }
 
     if (project.teamEmails.includes(email) || project.adminEmail === email) {
       return res.status(400).json({ message: "Member already exists" });
@@ -262,7 +220,7 @@ export const addMemberController = async (req, res) => {
           },
           sendNotificationEmail: false,
         });
-      } catch (err) {
+      } catch (err: any) {
         console.error(`Failed to share document ${doc.title} with ${email}:`, err.message);
       }
     }
@@ -309,6 +267,11 @@ export const deleteMemberController = async (req: any, res: any) => {
 
     if (project.adminEmail === email) {
       return res.status(400).json({ message: "Cannot remove admin" });
+    }
+
+    if (project.teamEmails == null)
+    {
+      return res.status(400).json({ message: "No team emails found." })
     }
 
     // Remove user from project team
@@ -440,33 +403,75 @@ export const googleAuthCallback = async (req: any, res: any) => {
   if (!code) return res.status(400).send('No code returned from Google');
   if (!state) return res.status(400).send('No state returned from Google');
 
-  const { projectId, userId } = JSON.parse(decodeURIComponent(state as string));
+  const parsedState = JSON.parse(decodeURIComponent(state as string));
+  const { userId, projectData } = parsedState; // note: projectData only exists if creating a project
 
   console.log(`User Id: ${userId}`);
-  console.log(`Project Id: ${projectId}`);
+  if (projectData) console.log('Project data found, will create project after auth');
 
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
     process.env.GOOGLE_REDIRECT_URI
-  )
+  );
 
   try {
-    const { tokens } = await oauth2Client.getToken(code)
-    console.log(tokens) // access_token and refresh_token
+    // Exchange code for tokens
+    const { tokens } = await oauth2Client.getToken(code);
+    console.log(tokens); // access_token and refresh_token
 
-    // Save tokens in DB if you want
-    await UserModel.findByIdAndUpdate(userId, { googleAccessToken: tokens.access_token, googleRefreshToken: tokens.refresh_token })
+    // Save tokens in DB
+    await UserModel.findByIdAndUpdate(userId, {
+      googleAccessToken: tokens.access_token,
+      googleRefreshToken: tokens.refresh_token,
+    });
 
-    // Redirect back to your frontend project page
-    res.redirect(`http://localhost:5173/project/${projectId}`)
+    // If project data exists → create project
+    if (projectData) {
+      const user = await UserModel.findById(userId);
+
+      oauth2Client.setCredentials({
+        access_token: user?.googleAccessToken,
+        refresh_token: user?.googleRefreshToken,
+      });
+
+      const drive = google.drive({ version: 'v3', auth: oauth2Client });
+
+      // Create folder in Google Drive
+      const folder = await drive.files.create({
+        requestBody: {
+          name: `onco-lens-${userId}`,
+          mimeType: 'application/vnd.google-apps.folder',
+        },
+        fields: 'id',
+      });
+
+      const project = await ProjectModel.create({
+        ...projectData,
+        adminId: userId,
+        adminName: user?.name,
+        adminEmail: user?.email,
+        driveFolderId: folder.data.id,
+      });
+
+      if (redis) await invalidateProjectLists(redis);
+
+      // Redirect to the **new project page**
+      return res.redirect(`http://localhost:5173/project/${project._id}`);
+    }
+
+    // If projectData doesn't exist → just Google auth, go to dashboard
+    return res.redirect('http://localhost:5173/dashboard');
+
   } catch (err) {
-    console.error('Error exchanging code for tokens:', err)
-    res.status(400).send('Failed to exchange code for tokens')
+    console.error('Error exchanging code for tokens or creating project:', err);
+    res.status(400).send('Failed to exchange code for tokens or create project');
   }
-}
+};
 
-export const getAllDocumentsController = async (req, res) => {
+
+
+export const getAllDocumentsController = async (req: any, res: any) => {
   try {
     const { id } = req.params;
 
@@ -508,7 +513,87 @@ export const getAllDocumentsController = async (req, res) => {
   }
 };
 
+export const createProjectController = async (req: any, res: any) => {
+  try {
+    const { id: userId } = req.params;
+    const { name, description, focus, cancerTypes, status, teamEmails } = req.body;
 
+    // Validate input
+    if (!name || !description) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // Load user
+    const user = await UserModel.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // --- PATH 1: User has no Google tokens ---
+    if (!user.googleAccessToken || !user.googleRefreshToken) {
+      const state = encodeURIComponent(JSON.stringify({
+        userId,
+        projectData: { name, description, focus, cancerTypes, status, teamEmails }
+      }));
+
+      const redirectUrl = `http://localhost:8000/auth/google?state=${state}`; 
+      return res.status(200).json({
+        requiresGoogleAuth: true,
+        redirect: redirectUrl,
+      });
+    }
+
+    // --- PATH 2: User has Google tokens → create project immediately ---
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      process.env.GOOGLE_REDIRECT_URI
+    );
+
+    oauth2Client.setCredentials({
+      access_token: user.googleAccessToken,
+      refresh_token: user.googleRefreshToken,
+    });
+
+    const drive = google.drive({ version: "v3", auth: oauth2Client });
+
+    // Create Google Drive folder
+    const folder = await drive.files.create({
+      requestBody: {
+        name: `onco-lens-${userId}`,
+        mimeType: "application/vnd.google-apps.folder",
+      },
+      fields: "id",
+    });
+
+    if (!folder.data.id) throw new Error("Failed to create Google Drive folder");
+
+    // Save project in DB
+    const project = await ProjectModel.create({
+      name,
+      description,
+      focus,
+      cancerTypes,
+      status,
+      teamEmails,
+      adminId: userId,
+      adminName: user.name,
+      adminEmail: user.email,
+      driveFolderId: folder.data.id,
+    });
+
+    // Clear Redis cache
+    if (redis) await invalidateProjectLists(redis);
+
+    // Return created project
+    res.status(201).json(project);
+
+  } catch (error: any) {
+    console.error("Create project error:", error);
+    res.status(500).json({
+      message: "Error creating project",
+      error: error.message,
+    });
+  }
+};
 
 export const createDocumentController = async (req: any, res: any) => {
   try {
@@ -566,6 +651,11 @@ export const createDocumentController = async (req: any, res: any) => {
     const docResponse = await docs.documents.create({ requestBody: { title } });
     const documentId = docResponse.data.documentId;
 
+    if (documentId == null)
+    {
+      return res.status(400).json({ message: "No documentId found." })
+    }
+
     // 5️⃣ Move doc into folder
     await drive.files.update({
       fileId: documentId,
@@ -589,6 +679,12 @@ export const createDocumentController = async (req: any, res: any) => {
 
     // 7️⃣ Share document with all project members
     const project = await ProjectModel.findById(projectId);
+    
+    if (project?.teamEmails == null)
+    {
+      return res.status(400).json({ message: "No team emails found." })
+    }
+
     if (project) {
       const allEmails = [project.adminEmail, ...project.teamEmails];
 
@@ -603,7 +699,7 @@ export const createDocumentController = async (req: any, res: any) => {
             },
             sendNotificationEmail: false,
           });
-        } catch (err) {
+        } catch (err: any) {
           console.error(`Failed to share document with ${email}:`, err.message);
         }
       }
@@ -636,7 +732,7 @@ export const createDocumentController = async (req: any, res: any) => {
 };
 
 
-export const deleteDocumentController = async (req, res) => {
+export const deleteDocumentController = async (req: any, res: any) => {
   try {
     const { documentId, userId } = req.body;
 
@@ -685,7 +781,7 @@ export const deleteDocumentController = async (req, res) => {
     // 5️⃣ Delete document from Google Drive
     try {
       await drive.files.delete({ fileId: doc.documentId });
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to delete Google Doc:", err.message);
       return res.status(500).json({ message: "Failed to delete document from Google Drive" });
     }
@@ -703,7 +799,7 @@ export const deleteDocumentController = async (req, res) => {
       const cached = await redis.get(redisKey);
       if (cached) {
         let documents = JSON.parse(cached);
-        documents = documents.filter(d => d.documentId !== doc.documentId);
+        documents = documents.filter((d: any) => d.documentId !== doc.documentId);
         await redis.setEx(redisKey, 60 * 5, JSON.stringify(documents));
       }
     }

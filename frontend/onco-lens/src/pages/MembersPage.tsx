@@ -80,21 +80,21 @@ const MembersPage: React.FC = () => {
             }
 
             // Make POST request
-            // const response = await axios.post(
-            //     `http://localhost:8000/api/project/${id}/member`,
-            //     { email },
-            //     { withCredentials: true, headers: { "Content-Type": "application/json" } }
-            // );
+            const response = await axios.post(
+                `http://localhost:8000/api/project/${id}/member`,
+                { email },
+                { withCredentials: true, headers: { "Content-Type": "application/json" } }
+            );
 
-            // console.log("POST response:", response.data);
+            console.log("POST response:", response.data);
 
             setProject(prev =>
                 prev ? { ...prev, teamEmails: [...prev.teamEmails, email] } : prev
             );
 
-            toast.success(`${email} added successfully`);
+            console.log("MEMBER ADDED!");
             setEmail("");
-
+            toast.success(`${email} added successfully`);
         } catch (error: any) {
             // console.error("Error adding member:", error);
 

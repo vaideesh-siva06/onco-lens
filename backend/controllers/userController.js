@@ -8,6 +8,19 @@ import DocumentModel from "../models/DocumentModel.js";
 import redis from "../config/redisClient.js";
 import { invalidateProject, invalidateProjectLists, invalidateDocumentCacheForUser } from "../utils/redisHelpers.js";
 import { getIO } from '../server/socket.ts';
+import { google } from 'googleapis';
+
+// Initialize Google Drive client (use your OAuth2 setup)
+const auth = new google.auth.GoogleAuth({
+  credentials: {
+    // Add your service account credentials here or load from env
+    client_email: process.env.GOOGLE_CLIENT_EMAIL,
+    private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+  },
+  scopes: ['https://www.googleapis.com/auth/drive'],
+});
+
+const drive = google.drive({ version: 'v3', auth });
 
 export const getUserController = async (req, res) => {
     try {
@@ -281,3 +294,73 @@ export const deleteUserController = async (req, res) => {
   }
 };
 
+export const reconnectGoogleAccount = async (req, res) => {
+  try {
+    const { userId } = req.query; // Pass userId from frontend
+
+    console.log(userId);
+
+    if (!userId) return res.status(400).json({ message: "Missing userId" });
+
+    const user = await UserModel.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Create OAuth2 client
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      process.env.GOOGLE_REDIRECT_URI // e.g., http://localhost:8000/auth/google/callback
+    );
+
+    // Generate auth URL
+    const authUrl = oauth2Client.generateAuthUrl({
+      access_type: "offline", // get refresh token
+      scope: [
+        "https://www.googleapis.com/auth/drive.file", // adjust scopes as needed
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile",
+      ],
+      state: encodeURIComponent(JSON.stringify({ userId })), // optional state
+      prompt: "consent", // forces Google to always show consent screen (reconnect)
+    });
+
+    // Send URL to frontend
+    res.status(200).json({ url: authUrl });
+
+  } catch (error) {
+    console.error("Reconnect Google account error:", error);
+    res.status(500).json({ message: "Failed to generate reconnect URL", error: error.message });
+  }
+};
+
+// Example: backend callback at /auth/google/callback
+export const googleOAuthCallback = async (req, res) => {
+  const { code, state } = req.query;
+  const { userId } = JSON.parse(decodeURIComponent(state));
+
+  const user = await UserModel.findById(userId);
+
+  // Exchange code for tokens
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_REDIRECT_URI
+  );
+  const { tokens } = await oauth2Client.getToken(code);
+  oauth2Client.setCredentials(tokens);
+
+  user.googleAccessToken = tokens.access_token;
+  user.googleRefreshToken = tokens.refresh_token || user.googleRefreshToken;
+  await user.save();
+
+  // ✅ Send postMessage to main page and close popup
+  res.send(`
+    <script>
+      window.opener.postMessage(
+        { googleConnected: true, accessToken: "${tokens.access_token}" },
+        "http://localhost:5173"
+      );
+      window.close(); // closes the popup
+    </script>
+  `);
+};

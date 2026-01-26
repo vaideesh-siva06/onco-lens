@@ -85,10 +85,10 @@ const OncoLensAIUpload: React.FC<OncoLensAIUploadProps> = ({ onCreate }) => {
                             {prediction?.prediction || "N/A"}
                             <br /><br /><br />
                             <span className="font-semibold">Confidence:</span>{" "}
-                            {(parseFloat((prediction?.confidence_percent).toFixed(2))) || "N/A"}%
+                            {(parseFloat((prediction?.confidence))) || "N/A"}%
                             <br />
-                            <span className="font-semibold">Confidence Level:</span>{" "}
-                            {prediction?.confidence_level}
+                            <span className="font-semibold">Class:</span>{" "}
+                            {prediction?.description}
                         </p>
                     </div>
 

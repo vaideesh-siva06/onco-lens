@@ -111,7 +111,7 @@ const HeroSection: React.FC = () => {
                 </motion.div>
 
                 {/* Mission Blocks */}
-                <motion.div
+                {/* <motion.div
                     className="mt-16 flex flex-wrap justify-center gap-10 md:gap-16"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -147,7 +147,7 @@ const HeroSection: React.FC = () => {
                             </div>
                         </div>
                     ))}
-                </motion.div>
+                </motion.div> */}
 
 
                 {/* Scroll Down Arrow */}
