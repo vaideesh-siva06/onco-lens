@@ -96,14 +96,68 @@ const OncoLensAIUpload: React.FC<OncoLensAIUploadProps> = ({ onCreate }) => {
             )}
 
             {/* Supported Cancers */}
-            <div className="p-5 border border-orange-200 rounded-xl bg-white shadow-sm mt-5">
-                <h4 className="text-xl font-semibold text-orange-600 mb-2">
-                    Supported Cancers
-                </h4>
-                <p className="text-base text-gray-700 leading-relaxed">
-                    Brain, Breast, Cervix, Colon, Kidney, Lung
-                </p>
+            <div className="flex flex-col md:flex-row gap-5 mt-5">
+
+                {/* Scans Card */}
+                <div className="flex-1 p-5 border border-orange-200 rounded-xl bg-white shadow-sm hover:shadow-lg transition">
+                    <h4 className="text-xl font-semibold text-orange-600 mb-2">
+                        Scans
+                    </h4>
+                    <p className="text-sm text-gray-500 mb-3">
+                        Cancers with full MRI or CT scans used for training the model.
+                    </p>
+                    <ul className="text-base text-gray-700 list-none space-y-2">
+                        <li>
+                            <span className="inline-block bg-blue-200 text-blue-800 px-2 py-1 rounded-full mr-2 text-sm font-medium">
+                                Brain
+                            </span>
+                            MRI scans
+                        </li>
+                        <li>
+                            <span className="inline-block bg-blue-200 text-blue-800 px-2 py-1 rounded-full mr-2 text-sm font-medium">
+                                Kidney
+                            </span>
+                            CT scans
+                        </li>
+                    </ul>
+                </div>
+
+                {/* Tumor Image Patches Card */}
+                <div className="flex-1 p-5 border border-orange-200 rounded-xl bg-white shadow-sm hover:shadow-lg transition">
+                    <h4 className="text-xl font-semibold text-orange-600 mb-2">
+                        Model Trained on Tumor Image Patches
+                    </h4>
+                    <p className="text-sm text-gray-500 mb-3">
+                        Cancers where the model was trained using cropped tumor image patches.
+                    </p>
+                    <ul className="text-base text-gray-700 list-none space-y-2">
+                        <li>
+                            <span className="inline-block bg-purple-200 text-purple-800 px-2 py-1 rounded-full mr-2 text-sm font-medium">
+                                Lung
+                            </span>
+                        </li>
+                        <li>
+                            <span className="inline-block bg-purple-200 text-purple-800 px-2 py-1 rounded-full mr-2 text-sm font-medium">
+                                Breast
+                            </span>
+                        </li>
+                        <li>
+                            <span className="inline-block bg-purple-200 text-purple-800 px-2 py-1 rounded-full mr-2 text-sm font-medium">
+                                Cervix
+                            </span>
+                        </li>
+                        <li>
+                            <span className="inline-block bg-purple-200 text-purple-800 px-2 py-1 rounded-full mr-2 text-sm font-medium">
+                                Colon
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+
             </div>
+
+
+
         </div>
     );
 };
