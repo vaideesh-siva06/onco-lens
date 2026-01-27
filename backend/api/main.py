@@ -31,6 +31,8 @@ class_descriptions = {
     "brain_tumor": "General brain tumor — abnormal cell growth in brain tissue. (brain_tumor)",
     "breast_benign": "Non‑cancerous breast tumor that does not invade surrounding tissue. (breast_benign)",
     "breast_malignant": "Cancerous breast tumor that can invade nearby tissue and spread. (breast_malignant)",
+    "breast_benign_ct": "Non‑cancerous breast tumor that does not invade surrounding tissue. (breast_benign)",
+    "breast_malignant_ct": "Cancerous breast tumor that can invade nearby tissue and spread. (breast_malignant)",
     "cervix_dyk": "Precancerous abnormal cervical cells (dyskaryosis) with potential to progress. (cervix_dyk)",
     "cervix_koc": "Keratinizing cervical squamous cell carcinoma — invasive type of cervical cancer. (cervix_koc)",
     "cervix_mep": "Benign transformation of cervical epithelial cells (metaplasia). (cervix_mep)",
@@ -40,8 +42,11 @@ class_descriptions = {
     "kidney_normal": "Healthy kidney tissue with no abnormal growth. (kidney_normal)",
     "kidney_tumor": "Tumor in the kidney; may be benign or malignant. (kidney_tumor)",
     "lung_aca": "Lung adenocarcinoma — cancer arising from mucus‑producing cells. (lung_aca)",
+    "lung_aca_ct": "Lung adenocarcinoma — cancer arising from mucus‑producing cells. (lung_aca)",
     "lung_bnt": "Non‑cancerous lung tumor. (lung_bnt)",
+    "lung_bnt_ct": "Non‑cancerous lung tumor. (lung_bnt)",
     "lung_scc": "Lung squamous cell carcinoma — lung cancer from squamous cells. (lung_scc)",
+    "lung_scc_ct": "Lung squamous cell carcinoma — lung cancer from squamous cells. (lung_scc)"
 }
 
 model = keras.models.load_model("./cancer_model.keras")
