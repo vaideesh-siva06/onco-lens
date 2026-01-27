@@ -125,12 +125,6 @@ const OncoLensAIUpload: React.FC<OncoLensAIUploadProps> = ({ onCreate }) => {
                             </span>
                             CT scans
                         </li>
-                        <li>
-                            <span className="inline-block bg-blue-200 text-blue-800 px-2 py-1 rounded-full mr-2 text-sm font-medium">
-                                Breast
-                            </span>
-                            MRI scans
-                        </li>
                     </ul>
                 </div>
 
