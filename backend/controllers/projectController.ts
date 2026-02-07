@@ -457,11 +457,11 @@ export const googleAuthCallback = async (req: any, res: any) => {
       if (redis) await invalidateProjectLists(redis);
 
       // Redirect to the **new project page**
-      return res.redirect(`http://localhost:5173/project/${project._id}`);
+      return res.redirect(`http://localhost/project/${project._id}`);
     }
 
     // If projectData doesn't exist → just Google auth, go to dashboard
-    return res.redirect('http://localhost:5173/dashboard');
+    return res.redirect('http://localhost/dashboard');
 
   } catch (err) {
     console.error('Error exchanging code for tokens or creating project:', err);
