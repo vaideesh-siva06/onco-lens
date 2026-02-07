@@ -1,18 +1,18 @@
-from fastapi import UploadFile, File
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-import keras
 import numpy as np
 from PIL import Image, UnidentifiedImageError
 import io
-from keras.applications.resnet50 import preprocess_input
+from tensorflow.keras.models import load_model
+from tensorflow.keras.applications.resnet50 import preprocess_input
 
 app = FastAPI()
 
 origins = [
     "http://localhost:5173",
-    # add other origins if needed
+    "http://localhost:80",
+    "http://localhost"
 ]
 
 app.add_middleware(
@@ -23,7 +23,11 @@ app.add_middleware(
     allow_headers=["*"],        
 )
 
-class_names = ['brain_glioma', 'brain_menin', 'brain_tumor', 'breast_benign', 'breast_malignant', 'cervix_dyk', 'cervix_koc', 'cervix_mep', 'cervix_pab', 'colon_aca', 'colon_bnt', 'kidney_normal', 'kidney_tumor', 'lung_aca', 'lung_bnt', 'lung_scc']
+class_names = [
+    'brain_glioma', 'brain_menin', 'brain_tumor', 'breast_benign', 'breast_malignant',
+    'cervix_dyk', 'cervix_koc', 'cervix_mep', 'cervix_pab', 'colon_aca', 'colon_bnt',
+    'kidney_normal', 'kidney_tumor', 'lung_aca', 'lung_bnt', 'lung_scc'
+]
 
 class_descriptions = {
     "brain_glioma": "Tumor from supportive glial cells in the brain; can be benign or malignant. (brain_glioma)",
@@ -31,8 +35,6 @@ class_descriptions = {
     "brain_tumor": "General brain tumor — abnormal cell growth in brain tissue. (brain_tumor)",
     "breast_benign": "Non‑cancerous breast tumor that does not invade surrounding tissue. (breast_benign)",
     "breast_malignant": "Cancerous breast tumor that can invade nearby tissue and spread. (breast_malignant)",
-    "breast_benign_ct": "Non‑cancerous breast tumor that does not invade surrounding tissue. (breast_benign)",
-    "breast_malignant_ct": "Cancerous breast tumor that can invade nearby tissue and spread. (breast_malignant)",
     "cervix_dyk": "Precancerous abnormal cervical cells (dyskaryosis) with potential to progress. (cervix_dyk)",
     "cervix_koc": "Keratinizing cervical squamous cell carcinoma — invasive type of cervical cancer. (cervix_koc)",
     "cervix_mep": "Benign transformation of cervical epithelial cells (metaplasia). (cervix_mep)",
@@ -42,15 +44,13 @@ class_descriptions = {
     "kidney_normal": "Healthy kidney tissue with no abnormal growth. (kidney_normal)",
     "kidney_tumor": "Tumor in the kidney; may be benign or malignant. (kidney_tumor)",
     "lung_aca": "Lung adenocarcinoma — cancer arising from mucus‑producing cells. (lung_aca)",
-    "lung_aca_ct": "Lung adenocarcinoma — cancer arising from mucus‑producing cells. (lung_aca)",
     "lung_bnt": "Non‑cancerous lung tumor. (lung_bnt)",
-    "lung_bnt_ct": "Non‑cancerous lung tumor. (lung_bnt)",
-    "lung_scc": "Lung squamous cell carcinoma — lung cancer from squamous cells. (lung_scc)",
-    "lung_scc_ct": "Lung squamous cell carcinoma — lung cancer from squamous cells. (lung_scc)"
+    "lung_scc": "Lung squamous cell carcinoma — lung cancer from squamous cells. (lung_scc)"
 }
 
-model = keras.models.load_model("./cancer_model.keras")
-print(model)
+# Load model using tensorflow.keras
+model = load_model("./cancer_model.keras")
+print("Model loaded successfully!")
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
@@ -67,16 +67,17 @@ async def predict(file: UploadFile = File(...)):
         if image.mode != "RGB":
             image = image.convert("RGB")
         
-        image = image.resize((256, 256))  # or (128,128) depending on your model
-        img_array = np.array(image)       # shape (256,256,3)
-        img_array = np.expand_dims(img_array, axis=0)  # shape (1,256,256,3)
+        # Resize to model input size
+        image = image.resize((256, 256))  
+        img_array = np.array(image)       
+        img_array = np.expand_dims(img_array, axis=0)  
         img_array = preprocess_input(img_array.astype(np.float32))
 
         # Predict
         prediction = model.predict(img_array)
         pred_index = int(np.argmax(prediction[0]))
         pred_class_name = class_names[pred_index]
-        pred_description = class_descriptions[pred_class_name]
+        pred_description = class_descriptions.get(pred_class_name, "")
         confidence = round(float(np.max(prediction[0]) * 100), 2)
 
         return {
@@ -87,7 +88,6 @@ async def predict(file: UploadFile = File(...)):
 
     except Exception as e:
         return {"error": f"Error processing image for prediction: {e}"}
-
 
 
 if __name__ == '__main__':

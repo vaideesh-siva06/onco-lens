@@ -1,5 +1,5 @@
 import ProjectModel from "../models/ProjectModel.js";
-import { ChatModel } from "../models/ChatModel.ts";
+import { ChatModel } from "../models/ChatModel.js";
 import UserModel from "../models/UserModel.js";
 import mongoose from "mongoose";
 import redis from "../config/redisClient.js";
@@ -700,6 +700,14 @@ export const createDocumentController = async (req: any, res: any) => {
             sendNotificationEmail: false,
           });
         } catch (err: any) {
+          console.log("ERROR");
+          console.log(err?.response?.data?.error)
+          // if (err?.response?.data?.error === "invalid_grant") {
+          //   return res.status(401).json({
+          //     message: "Google authorization expired",
+          //     reauthRequired: true
+          //   });
+          // }
           console.error(`Failed to share document with ${email}:`, err.message);
         }
       }
@@ -725,8 +733,15 @@ export const createDocumentController = async (req: any, res: any) => {
       document: savedDoc,
       documentUrl,
     });
-  } catch (error) {
+  } catch (error:any) {
     console.error("Google Docs creation error:", error);
+    if (error?.response?.data?.error === "invalid_grant") {
+      console.log("NO!")
+      return res.status(401).json({
+        message: "Google authorization expired",
+        reauthRequired: true
+      });
+    }
     res.status(500).json({ message: "Failed to create document" });
   }
 };

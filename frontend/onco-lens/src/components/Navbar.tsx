@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { FiSettings } from 'react-icons/fi';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import { useUser } from '../../context/UserContext';
 
 const Navbar: React.FC = () => {
   // const isAuthenticated = useState(Boolean(localStorage.getItem('token')));

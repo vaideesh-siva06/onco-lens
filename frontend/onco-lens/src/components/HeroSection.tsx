@@ -3,7 +3,6 @@ import React from 'react';
 import { Link as ScrollLink } from 'react-scroll';
 import { FaArrowDown, FaPlay } from 'react-icons/fa';
 import { Link } from 'react-router';
-import { LuBookOpen, LuGlobe, LuZap } from 'react-icons/lu';
 
 const HeroSection: React.FC = () => {
     return (

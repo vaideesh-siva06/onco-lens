@@ -5,14 +5,14 @@ import http from 'http';
 import cookieParser from 'cookie-parser';
 
 import { connectDB } from './db/db.js';
-import { initSocketServer } from './server/socket.ts'
+import { initSocketServer } from './server/socket.js'
 
 import authRouter from './routes/authRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import projectRouter from './routes/projectRoutes.js';
 import meetingRouter from './routes/meetingRoutes.js';
 import chatRouter from './routes/chatRoutes.js';
-import { googleAuthCallback, googleAuthRedirect } from './controllers/projectController.ts';
+import { googleAuthCallback, googleAuthRedirect } from './controllers/projectController.js';
 
 dotenv.config();
 
@@ -29,7 +29,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin: 'http://localhost:5173', // frontend
+    origin: ["http://localhost:5173", "http://localhost"], // frontend
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
 }));

@@ -1,5 +1,5 @@
 import Router from "express";
-import { addMemberController, createDocumentController, createProjectController, deleteDocumentController, deleteMemberController, deleteProjectController, getAllDocumentsController, getAllProjectsController, getProjectController, updateProjectController } from "../controllers/projectController.ts";
+import { addMemberController, createDocumentController, createProjectController, deleteDocumentController, deleteMemberController, deleteProjectController, getAllDocumentsController, getAllProjectsController, getProjectController, updateProjectController } from "../controllers/projectController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const projectRouter = Router();

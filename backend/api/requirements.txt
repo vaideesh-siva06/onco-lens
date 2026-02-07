@@ -1,0 +1,10 @@
+# FastAPI backend
+fastapi==0.111.1
+uvicorn[standard]==0.23.2
+
+# Scientific packages
+numpy==1.26.2
+Pillow==10.1.0
+
+# TensorFlow (includes Keras)
+tensorflow==2.20.0

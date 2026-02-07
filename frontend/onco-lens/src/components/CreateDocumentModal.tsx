@@ -84,7 +84,7 @@ const CreateDocumentModal: React.FC<CreateDocumentModalProps> = ({
     // Check if backend says Google not connected
     if (
         err.response?.status === 401 &&
-        err.response?.data?.message === 'Google account not connected'
+        err.response?.data?.message === 'Google account not connected' || err.response?.data?.message === 'Google authorization expired'
     ) {
         toast.info('Please connect your Google account first...');
         

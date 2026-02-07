@@ -8,7 +8,6 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 const ProjectHomePage = ({ project }: { project: Project }) => {
     const { documents, fetchDocuments, removeDocument } = useDocuments();
     const user = useUser();
@@ -18,46 +17,35 @@ const ProjectHomePage = ({ project }: { project: Project }) => {
 
     useEffect(() => {
         fetchDocuments(project._id);
-        // console.log(project._id)
-        // console.log(user.user?._id)
     }, [project._id]);
 
-    // console.log(documents);
-
-    // Pagination logic
     const indexOfLastDoc = currentPage * docsPerPage;
     const indexOfFirstDoc = indexOfLastDoc - docsPerPage;
     const currentDocs = documents.slice(indexOfFirstDoc, indexOfLastDoc);
 
     const totalPages = Math.ceil(documents.length / docsPerPage);
 
-  const deleteDocument = async (documentId: string) => {
-        // console.log(documentId);
-
+    const deleteDocument = async (documentId: string) => {
         try {
             await axios.delete(
-            `http://localhost:8000/api/project/${project._id}/deleteDocument`,
-            {
-                data: {
-                documentId,
-                userId: user.user?._id,
-                },
-                withCredentials: true,
-            }
+                `http://localhost:8000/api/project/${project._id}/deleteDocument`,
+                {
+                    data: {
+                        documentId,
+                        userId: user.user?._id,
+                    },
+                    withCredentials: true,
+                }
             );
-            
-            removeDocument(documentId);
 
-            // console.log(documents);
+            removeDocument(documentId);
         } catch (err) {
-            // console.error("Failed to delete document:", err);
             toast.error("Failed to delete document");
         }
     };
 
-
     return (
-        <div>
+        <div className="px-4 md:px-8 lg:px-16 py-6">
             <ToastContainer
                 position="top-center"
                 autoClose={2000}
@@ -67,42 +55,47 @@ const ProjectHomePage = ({ project }: { project: Project }) => {
                 theme="light"
                 closeButton={false}
             />
-            
-            <h1 className="text-3xl font-bold mb-2">{project.name}</h1>
-            <p className="text-gray-700 mb-4">{project.description}</p>
 
-            <DocumentComponent />
+            {/* Project Header */}
+            <div className="mb-6">
+                <h1 className="text-3xl font-extrabold mb-2">{project.name}</h1>
+                <p className="text-gray-700 text-lg">{project.description}</p>
+            </div>
 
-            <div className="flex-wrap gap-2 mb-4">
+            {/* Document Upload Component */}
+            <div className="mb-8">
+                <DocumentComponent />
+            </div>
+
+            {/* Project Tags & Status */}
+            <div className="flex flex-wrap gap-3 mb-10">
                 {project.focus && (
-                    <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full">{project.focus}</span>
+                    <span className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full font-medium text-sm">
+                        {project.focus}
+                    </span>
                 )}
-                <div className="flex gap-2 flex-wrap mt-5">
-                    {project.cancerTypes?.map(type => (
-                        <span
-                            key={type}
-                            className="bg-green-100 text-green-800 px-2 py-1 rounded-full"
-                        >
-                            {type}
-                        </span>
-                    ))}
-                </div>
+                {project.cancerTypes?.map(type => (
+                    <span
+                        key={type}
+                        className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-medium text-sm"
+                    >
+                        {type}
+                    </span>
+                ))}
                 {project.status && (
-                    <div className="mt-2">
-                        <span>Status: </span>
-                        <span className={`text-sm px-2 py-1 rounded-full ${
-                            project.status === 'Planning' ? 'bg-gray-200 text-gray-800' :
-                            project.status === 'Ongoing' ? 'bg-blue-100 text-blue-800' :
-                            project.status === 'Completed' ? 'bg-green-100 text-green-800' :
-                            'bg-purple-100 text-purple-800'
-                        }`}>
-                            {project.status}
-                        </span>
-                    </div>
+                    <span className={`mt-2 text-sm px-3 py-1 rounded-full font-medium ${
+                        project.status === 'Planning' ? 'bg-gray-200 text-gray-800' :
+                        project.status === 'Ongoing' ? 'bg-blue-100 text-blue-800' :
+                        project.status === 'Completed' ? 'bg-green-100 text-green-800' :
+                        'bg-purple-100 text-purple-800'
+                    }`}>
+                        Status: {project.status}
+                    </span>
                 )}
             </div>
 
-            <h1 className="text-xl font-bold mb-4 mt-10">Documents</h1>
+            {/* Documents Section */}
+            <h2 className="text-2xl font-bold mb-4">Documents</h2>
 
             {documents.length === 0 ? (
                 <p className="text-gray-500 italic">No documents found</p>
@@ -110,55 +103,56 @@ const ProjectHomePage = ({ project }: { project: Project }) => {
                 <>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                         {currentDocs.map((document) => (
-                            <div key={document._id} className="flex flex-col bg-white rounded-lg shadow-sm hover:shadow-md overflow-hidden transition hover:border-orange-500 border-transparent border-3">
-                            
-                            {/* Paper preview */}
-                            <a
-                                href={document.documentUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="h-52 bg-gray-50 flex items-center justify-center hover:bg-gray-100 transition"
+                            <div
+                                key={document._id}
+                                className="flex flex-col bg-white rounded-xl shadow-lg hover:shadow-xl overflow-hidden border border-transparent hover:border-orange-500 transition-transform duration-200 transform hover:-translate-y-1"
                             >
-                                {/* You can replace this with a PDF preview or icon */}
-                                <img src='/google_docs_icon.png' height={90} width={90}/>
-                            </a>
+                                {/* Paper preview */}
+                                <a
+                                    href={document.documentUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="h-52 bg-gray-50 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                                >
+                                    <img src='/google_docs_icon.png' height={90} width={90} className="transition-transform duration-200 hover:scale-110" />
+                                </a>
 
-                            {/* Title & Author row */}
-                            <div className="bg-gray-100 px-4 py-3 flex flex-col">
-                                <p className="text-gray-900 font-medium truncate">{document.title}</p>
-
-                                <div className="flex justify-between items-center mt-1">
-                                <p className="text-sm text-gray-500 italic truncate">
-                                    Created by: {document.author}
-                                </p>
-
-                                {(document.email === user.user?.email || user.user?.email === project?.adminEmail) && (
-                                    <span className="text-black hover:text-red-500 cursor-pointer" onClick={() => deleteDocument(document._id)}>
-                                        <FaTrash />
-                                    </span>
-                                )}
+                                {/* Title & Author */}
+                                <div className="bg-gray-100 px-4 py-3 flex flex-col gap-1">
+                                    <p className="text-gray-900 font-semibold truncate">{document.title}</p>
+                                    <div className="flex justify-between items-center">
+                                        <p className="text-sm text-gray-500 italic truncate">
+                                            Created by: {document.author}
+                                        </p>
+                                        {(document.email === user.user?.email || user.user?.email === project?.adminEmail) && (
+                                            <span
+                                                className="text-black hover:text-red-500 cursor-pointer transition-colors"
+                                                onClick={() => deleteDocument(document._id)}
+                                            >
+                                                <FaTrash />
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
                             </div>
                         ))}
                     </div>
 
-
                     {/* Pagination Controls */}
                     {totalPages > 1 && (
-                        <div className="flex justify-center items-center gap-2 mt-20">
+                        <div className="flex justify-center items-center gap-4 mt-10">
                             <button
-                                className="px-3 py-1 bg-orange-400 text-white rounded disabled:opacity-50"
+                                className="px-4 py-2 bg-orange-400 text-white rounded-lg shadow hover:shadow-md disabled:opacity-50 transition"
                                 disabled={currentPage === 1}
                                 onClick={() => setCurrentPage(prev => prev - 1)}
                             >
                                 Prev
                             </button>
-                            <span>
+                            <span className="font-medium">
                                 Page {currentPage} of {totalPages}
                             </span>
                             <button
-                                className="px-3 py-1 bg-orange-400 text-white rounded disabled:opacity-50"
+                                className="px-4 py-2 bg-orange-400 text-white rounded-lg shadow hover:shadow-md disabled:opacity-50 transition"
                                 disabled={currentPage === totalPages}
                                 onClick={() => setCurrentPage(prev => prev + 1)}
                             >

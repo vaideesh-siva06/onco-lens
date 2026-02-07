@@ -1,6 +1,6 @@
 // routes/chat.ts
 import express from 'express';
-import { ChatModel } from '../models/ChatModel.ts';
+import { ChatModel } from '../models/ChatModel.js';
 const chatRouter = express.Router();
 
 // Get chat between two users

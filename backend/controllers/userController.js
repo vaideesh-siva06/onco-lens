@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken';
 import DocumentModel from "../models/DocumentModel.js";
 import redis from "../config/redisClient.js";
 import { invalidateProject, invalidateProjectLists, invalidateDocumentCacheForUser } from "../utils/redisHelpers.js";
-import { getIO } from '../server/socket.ts';
+import { getIO } from '../server/socket.js';
 import { google } from 'googleapis';
 
 // Initialize Google Drive client (use your OAuth2 setup)

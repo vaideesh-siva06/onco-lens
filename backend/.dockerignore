@@ -1,0 +1,16 @@
+node_modules
+dist
+.git
+.env
+*.log
+api/model
+api/model/**
+api/**/*.keras
+api/**/*.ipynb
+api/**/multi_cancer
+api/**/multi_cancer/**
+uploads
+data
+tmp
+Dockerfile
+docker-compose.yml
