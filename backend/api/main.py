@@ -56,14 +56,8 @@ class_descriptions = {
 # Load model using tensorflow.keras
 model = None
 MODEL_PATH = "./cancer_model.keras"
-GDRIVE_URL = "https://drive.google.com/file/d/1M7dfqb4WBLrXlbzGTion6XlD9BRoBvOP/view?usp=sharing"
 
 def get_model():
-    # Download if not exists
-    if not os.path.exists(MODEL_PATH):
-        print("Downloading model from Google Drive...")
-        gdown.download(GDRIVE_URL, MODEL_PATH, quiet=False)
-    
     # Load and return the model
     return load_model(MODEL_PATH)
 
