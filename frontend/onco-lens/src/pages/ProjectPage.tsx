@@ -53,7 +53,7 @@ const ProjectPage: React.FC = () => {
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                const res = await axios.get(`http://localhost:8000/api/project/${id}`, { withCredentials: true });
+                const res = await axios.get(`https://onco-lens-backend.onrender.com/api/project/${id}`, { withCredentials: true });
                 setProject(res.data);
             } catch (error) {
                 console.error('Failed to fetch project', error);
