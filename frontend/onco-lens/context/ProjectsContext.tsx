@@ -83,7 +83,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
         if (!user?._id) return [];
         setLoading(true);
         try {
-            const res = await axios.get(`http://localhost:8000/api/projects/`, {
+            const res = await axios.get(`https://onco-lens-backend.onrender.com/api/projects/`, {
                 params: { userId: user._id, email: user.email },
                 withCredentials: true,
             });
@@ -104,7 +104,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
     const updateProject = async (projectId: string, projectData: Partial<Project>) => {
         if (!user?._id) return;
         const res = await axios.put(
-            `http://localhost:8000/api/project/${projectId}`,
+            `https://onco-lens-backend.onrender.com/api/project/${projectId}`,
             { ...projectData, userId: user._id },
             { withCredentials: true }
         );
@@ -116,7 +116,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
 
     const deleteProject = async (projectId: string) => {
         if (!user?._id) return;
-        const res = await axios.delete(`http://localhost:8000/api/project/${projectId}`, {
+        const res = await axios.delete(`https://onco-lens-backend.onrender.com/api/project/${projectId}`, {
             data: { id: projectId, userId: user._id, userEmail: user.email },
             withCredentials: true,
         });
@@ -129,7 +129,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
         if (!user?._id) return;
         try {
             const res = await axios.delete(
-                `http://localhost:8000/api/project/${projectId}/member`,
+                `https://onco-lens-backend.onrender.com/api/project/${projectId}/member`,
                 {
                     withCredentials: true,
                     data: { currUserId: user._id, projectId, email: user.email },
@@ -149,7 +149,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
         if (!user?._id) return [];
         try {
             const res = await axios.get(
-                `http://localhost:8000/api/meetings/${user._id}?email=${user.email}`,
+                `https://onco-lens-backend.onrender.com/api/meetings/${user._id}?email=${user.email}`,
                 { withCredentials: true }
             );
             setMeetings(res.data);
@@ -162,7 +162,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
     const createMeeting = async (meeting: Omit<Meeting, "_id" | "userId">) => {
         if (!user?._id) return;
         const res = await axios.post(
-            `http://localhost:8000/api/meeting/create`,
+            `https://onco-lens-backend.onrender.com/api/meeting/create`,
             { ...meeting, userId: user._id, userEmail: user.email },
             { withCredentials: true }
         );
@@ -173,7 +173,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
     const addParticipantToMeeting = async (meetingId: string, email: string) => {
         if (!user?._id) return;
         const res = await axios.put(
-            `http://localhost:8000/api/meeting/${meetingId}/add-participant`,
+            `https://onco-lens-backend.onrender.com/api/meeting/${meetingId}/add-participant`,
             { meetingId, email },
             { withCredentials: true }
         );
@@ -185,7 +185,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
     const deleteParticipantFromMeeting = async (meetingId: string, email: string) => {
         if (!user?._id) return;
         const res = await axios.put(
-            `http://localhost:8000/api/meeting/${meetingId}/remove-participant`,
+            `https://onco-lens-backend.onrender.com/api/meeting/${meetingId}/remove-participant`,
             { meetingId, email },
             { withCredentials: true }
         );
@@ -197,7 +197,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
     const deleteMeeting = async (meetingId: string) => {
         if (!user?._id) return;
         const res = await axios.delete(
-            `http://localhost:8000/api/meeting/${meetingId}/delete`,
+            `https://onco-lens-backend.onrender.com/api/meeting/${meetingId}/delete`,
             { withCredentials: true, data: { meetingId } }
         );
         const updated = res.data.meeting || res.data;
