@@ -7,6 +7,7 @@ import io
 from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.resnet50 import preprocess_input
 import os
+import gdown 
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1' 
 
@@ -54,13 +55,16 @@ class_descriptions = {
 
 # Load model using tensorflow.keras
 model = None
+MODEL_PATH = "./cancer_model.keras"
+GDRIVE_ID = "https://drive.google.com/file/d/1M7dfqb4WBLrXlbzGTion6XlD9BRoBvOP/view?usp=sharing"
 
 def get_model():
     global model
-    if model is None:
-        from tensorflow.keras.models import load_model
-        model = load_model("./cancer_model.keras")
-    return model
+    if not os.path.exists(MODEL_PATH):
+        url = f"https://drive.google.com/uc?id={GDRIVE_ID}"
+        print("Downloading model from Google Drive...")
+        gdown.download(url, MODEL_PATH, quiet=False)
+    return load_model(MODEL_PATH)
     
 # model = load_model("./cancer_model.keras")
 # print("Model loaded successfully!")
