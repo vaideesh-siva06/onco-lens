@@ -53,7 +53,7 @@ const CreateDocumentModal: React.FC<CreateDocumentModalProps> = ({
         setIsLoading(true)
 
         const res = await axios.post(
-            `http://localhost:8000/api/project/${id}/createDocument`,
+            `https://onco-lens-backend.onrender.com/api/project/${id}/createDocument`,
             {
                 title, projectId: id, userId: userId, author: user.user?.name, email: user.user?.email
             },
@@ -92,7 +92,7 @@ const CreateDocumentModal: React.FC<CreateDocumentModalProps> = ({
         const state = JSON.stringify({ projectId: id, userId: userId });
         
         // Redirect to your backend OAuth route
-        window.location.href = `http://localhost:8000/auth/google?state=${encodeURIComponent(state)}`;
+        window.location.href = `https://onco-lens-backend.onrender.com/auth/google?state=${encodeURIComponent(state)}`;
         return;
     }
 
