@@ -54,19 +54,19 @@ class_descriptions = {
 }
 
 # Load model using tensorflow.keras
-MODEL_PATH = "/app/api/model/cancer_model.keras"
+MODEL_PATH = "/app/model/cancer_model.keras"
 
 def get_model():
     print("CWD:", os.getcwd())
     print("Files in /app:", os.listdir("/app"))
-    print("Files in /app/api:", os.listdir("/app/api"))
-    print("Files in /app/api/model:", os.listdir("/app/api/model"))
+    print("Files in /app/model:", os.listdir("/app/model"))
 
     if not os.path.exists(MODEL_PATH):
         raise RuntimeError(f"Model file missing at {MODEL_PATH}")
 
     print("Loading model...")
     return load_model(MODEL_PATH)
+
 
 
 # Load once at startup
