@@ -52,6 +52,7 @@ export const loginController = async (req, res) => {
           httpOnly: true,
           secure: isProd,
           sameSite: isProd ? "none" : "lax",
+          domain: isProd ? ".onrender.com" : undefined,
           maxAge: 24 * 60 * 60 * 1000,
         });
 
