@@ -21,7 +21,7 @@ import { toast } from "react-toastify";
 import { Tooltip } from "react-tooltip";
 import 'react-tooltip/dist/react-tooltip.css'
 
-const SOCKET_SERVER_URL = "http://localhost:8000";
+const SOCKET_SERVER_URL = "https://onco-lens-backend.onrender.com";
 
 const ICE_SERVERS = {
     iceServers: [
