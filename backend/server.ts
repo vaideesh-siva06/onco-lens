@@ -26,7 +26,7 @@ const server = http.createServer(app);
 initSocketServer(server);
 
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost", "https://onco-lens.onrender.com"], // frontend
+    origin: ["https://onco-lens.onrender.com", "http://localhost:5173"], // frontend
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
 }));
