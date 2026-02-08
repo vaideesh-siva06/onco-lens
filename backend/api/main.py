@@ -56,18 +56,20 @@ class_descriptions = {
 # Load model using tensorflow.keras
 model = None
 MODEL_PATH = "./cancer_model.keras"
-GDRIVE_ID = "https://drive.google.com/file/d/1M7dfqb4WBLrXlbzGTion6XlD9BRoBvOP/view?usp=sharing"
+GDRIVE_URL = "https://drive.google.com/uc?id=1M7dfqb4WBLrXlbzGTion6XlD9BRoBvOP"
 
 def get_model():
-    global model
+    # Download if not exists
     if not os.path.exists(MODEL_PATH):
-        url = f"https://drive.google.com/uc?id={GDRIVE_ID}"
         print("Downloading model from Google Drive...")
-        gdown.download(url, MODEL_PATH, quiet=False)
-    return load_model(MODEL_PATH)
+        gdown.download(GDRIVE_URL, MODEL_PATH, quiet=False)
     
-# model = load_model("./cancer_model.keras")
-# print("Model loaded successfully!")
+    # Load and return the model
+    return load_model(MODEL_PATH)
+
+# Load model once at startup
+model = get_model()
+print("Model loaded successfully!")
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
