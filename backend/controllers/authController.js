@@ -45,12 +45,12 @@ export const loginController = async (req, res) => {
 
     // Set HTTP-only cookie (works in Safari & Chrome)
     res.cookie("token", token, {
-      httpOnly: true,                 // not accessible by JS
-      secure: true,                   // HTTPS only
-      sameSite: "none",               // cross-site (frontend + backend different domains)
-      // domain: "onco-lens.onrender.com", // your frontend domain
-      // path: "/", 
-      maxAge: 24 * 60 * 60 * 1000,    // 1 day
+      httpOnly: true,
+      secure: true,                  // HTTPS only
+      sameSite: "none",              // cross-domain safe
+      domain: "onco-lens.onrender.com", // your frontend domain
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     return res.status(200).json({ message: "Login successful", _id: user._id });
@@ -64,12 +64,13 @@ export const loginController = async (req, res) => {
 
 export const logoutController = (req, res) => {
   res.clearCookie("token", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    domain: "onco-lens.onrender.com",
-    path: "/",
-  });
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      domain: "onco-lens.onrender.com",
+      path: "/",
+    });
+
 
   return res.status(200).json({ message: "Logout successful" });
 };
