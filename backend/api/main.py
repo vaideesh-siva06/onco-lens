@@ -55,7 +55,7 @@ class_descriptions = {
 
 # Load model using tensorflow.keras
 model = None
-MODEL_PATH = "./cancer_model.keras"
+MODEL_PATH = "./cancer_model.keras.zip"
 GDRIVE_ID = "https://drive.google.com/file/d/1M7dfqb4WBLrXlbzGTion6XlD9BRoBvOP/view?usp=sharing"
 
 def get_model():
