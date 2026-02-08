@@ -27,8 +27,8 @@ const server = http.createServer(app);
 initSocketServer(server);
 
 app.use(cors({
-  origin: "https://onco-lens.onrender.com"
-  credentials: true, // must be true for cookies
+  origin: "https://onco-lens.onrender.com",
+  credentials: true // must be true for cookies
 }));
 
 app.use(express.json());
