@@ -18,6 +18,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8000;
+const isProd = process.env.NODE_ENV === "production";
 
 // Create HTTP server
 const server = http.createServer(app);
@@ -26,9 +27,10 @@ const server = http.createServer(app);
 initSocketServer(server);
 
 app.use(cors({
-    origin: ["https://onco-lens.onrender.com", "http://localhost:5173"], // frontend
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
+  origin: isProd 
+    ? "https://onco-lens.onrender.com" // your frontend production URL
+    : "http://localhost:5173",          // your local dev frontend
+  credentials: true, // must be true for cookies
 }));
 
 app.use(express.json());
