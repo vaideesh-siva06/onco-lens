@@ -15,7 +15,8 @@ app = FastAPI()
 origins = [
     "http://localhost:5173",
     "http://localhost:80",
-    "http://localhost"
+    "http://localhost",
+    "https://onco-lens.onrender.com"
 ]
 
 app.add_middleware(
