@@ -46,12 +46,13 @@ export const loginController = async (req, res) => {
         }
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        const isProd = process.env.NODE_ENV === "production";
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-            maxAge: 24 * 60 * 60 * 1000
+        res.cookie("token", token, {
+          httpOnly: true,
+          secure: isProd,
+          sameSite: isProd ? "none" : "lax",
+          maxAge: 24 * 60 * 60 * 1000,
         });
 
         return res.status(200).json({
