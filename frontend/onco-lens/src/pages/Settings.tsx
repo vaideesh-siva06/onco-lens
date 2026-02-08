@@ -123,7 +123,7 @@ const Settings = () => {
     const handleDelete = async () => {
         try {
             socket.emit("leave_room", id);
-            await axios.delete(`http://localhost:8000/api/user/${id}`, { withCredentials: true });
+            await axios.delete(`https://onco-lens-backend.onrender.com/api/user/${id}`, { withCredentials: true });
             setUser(null);
             logout();
             navigate("/"); // redirect after delete
@@ -137,7 +137,7 @@ const Settings = () => {
 
         try {
             const res = await axios.get(
-            `http://localhost:8000/api/user/auth/google/reconnect`,
+            `https://onco-lens-backend.onrender.com/api/user/auth/google/reconnect`,
             { params: { userId: user._id },
               withCredentials: true
             }
