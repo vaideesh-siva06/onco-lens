@@ -59,14 +59,19 @@ MODEL_PATH = "./cancer_model.keras"
 GDRIVE_ID = "1M7dfqb4WBLrXlbzGTion6XlD9BRoBvOP" 
 
 def get_model():
+    print("CWD:", os.getcwd())
+    print("Files before download:", os.listdir("."))
+
     if not os.path.exists(MODEL_PATH):
         print("Downloading model from Google Drive...")
-        gdown.download(
-            f"https://drive.google.com/uc?id={GDRIVE_ID}",
-            MODEL_PATH,
-            quiet=False,
-            fuzzy=True
+        result = gdown.download(
+            id=GDRIVE_ID,
+            output=MODEL_PATH,
+            quiet=False
         )
+        print("gdown result:", result)
+
+    print("Files after download attempt:", os.listdir("."))
 
     if not os.path.exists(MODEL_PATH):
         raise RuntimeError("Model download failed — file not found")
