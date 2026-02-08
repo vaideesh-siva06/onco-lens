@@ -54,7 +54,7 @@ class_descriptions = {
 }
 
 # Load model using tensorflow.keras
-MODEL_PATH = "./cancer_model.keras"
+MODEL_PATH = "/app/api/model/cancer_model.keras"
 
 def get_model():
     print("CWD:", os.getcwd())
