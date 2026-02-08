@@ -48,8 +48,8 @@ export const loginController = async (req, res) => {
       httpOnly: true,                 // not accessible by JS
       secure: true,                   // HTTPS only
       sameSite: "none",               // cross-site (frontend + backend different domains)
-      domain: "onco-lens.onrender.com", // your frontend domain
-      path: "/", 
+      // domain: "onco-lens.onrender.com", // your frontend domain
+      // path: "/", 
       maxAge: 24 * 60 * 60 * 1000,    // 1 day
     });
 
