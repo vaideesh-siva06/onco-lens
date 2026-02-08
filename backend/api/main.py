@@ -56,9 +56,22 @@ class_descriptions = {
 # Load model using tensorflow.keras
 model = None
 MODEL_PATH = "./cancer_model.keras"
+GDRIVE_ID = "1M7dfqb4WBLrXlbzGTion6XlD9BRoBvOP" 
 
 def get_model():
-    # Load and return the model
+    if not os.path.exists(MODEL_PATH):
+        print("Downloading model from Google Drive...")
+        gdown.download(
+            f"https://drive.google.com/uc?id={GDRIVE_ID}",
+            MODEL_PATH,
+            quiet=False,
+            fuzzy=True
+        )
+
+    if not os.path.exists(MODEL_PATH):
+        raise RuntimeError("Model download failed — file not found")
+
+    print("Loading model...")
     return load_model(MODEL_PATH)
 
 # Load model once at startup
@@ -68,7 +81,6 @@ print("Model loaded successfully!")
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     try:
-        model = get_model()
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))
     except UnidentifiedImageError:
