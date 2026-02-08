@@ -2,7 +2,7 @@
 import { createClient } from "redis";
 
 const redisUrl =
-  process.env.REDIS_URL || "redis://redis:6379"; // fallback for docker-compose
+  process.env.REDIS_URL || "redis://red-d63ug3mr433s73e01l20:6379"; // fallback for docker-compose
 
 const redis = createClient({
   url: redisUrl,
