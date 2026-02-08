@@ -44,19 +44,19 @@ export const loginController = async (req, res) => {
         if (!match) {
             return res.status(400).json({ message: "Incorrect password" });
         }
-
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-        const isProd = process.env.NODE_ENV === "production";
         
-        // Detect HTTPS even behind proxy (like Render)
-        const isSecure = isProd; // because Render uses HTTPS in prod
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+        // detect HTTPS behind proxy
+        const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
         
         res.cookie("token", token, {
           httpOnly: true,
-          secure: isSecure,              // true in prod (HTTPS), false in dev
-          sameSite: isSecure ? "none" : "lax",
-          domain: isSecure ? ".onrender.com" : undefined, // only for prod
-          maxAge: 24 * 60 * 60 * 1000,  // 1 day
+          secure: isSecure,                  // MUST be true for HTTPS
+          sameSite: "none",                   // cross-site cookie
+          domain: "onco-lens.onrender.com",   // EXACT frontend domain
+          maxAge: 24 * 60 * 60 * 1000,
+          path: "/",
         });
 
 
