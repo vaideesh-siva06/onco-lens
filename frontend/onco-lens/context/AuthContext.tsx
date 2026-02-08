@@ -22,17 +22,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     useEffect(() => {
         const token = localStorage.getItem('token');
         const storedUserId = localStorage.getItem('userId');
-
+    
         if (token && storedUserId) {
             setIsAuthenticated(true);
             setUserId(storedUserId);
-            localStorage.setItem('token', 'true');
-            localStorage.setItem('userId', storedUserId);
         }
-        else {
-            logout();
-        }
-
+    
         setLoading(false);
     }, []);
 
