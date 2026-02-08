@@ -47,14 +47,18 @@ export const loginController = async (req, res) => {
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
         const isProd = process.env.NODE_ENV === "production";
-
+        
+        // Detect HTTPS even behind proxy (like Render)
+        const isSecure = isProd; // because Render uses HTTPS in prod
+        
         res.cookie("token", token, {
           httpOnly: true,
-          secure: isProd,
-          sameSite: isProd ? "none" : "lax",
-          domain: isProd ? ".onrender.com" : undefined,
-          maxAge: 24 * 60 * 60 * 1000,
+          secure: isSecure,              // true in prod (HTTPS), false in dev
+          sameSite: isSecure ? "none" : "lax",
+          domain: isSecure ? ".onrender.com" : undefined, // only for prod
+          maxAge: 24 * 60 * 60 * 1000,  // 1 day
         });
+
 
         return res.status(200).json({
             message: "Login successful",
