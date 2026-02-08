@@ -31,59 +31,58 @@ export const signupController = async (req, res) => {
 }
 
 export const loginController = async (req, res) => {
-    try {
-        const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-        const user = await UserModel.findOne({ email });
+    // 1. Find user
+    const user = await UserModel.findOne({ email });
+    if (!user) return res.status(400).json({ message: "User not found" });
 
-        if (!user) {
-            return res.status(400).json({ message: "User not found" });
-        }
+    // 2. Compare password
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(400).json({ message: "Incorrect password" });
 
-        const match = await bcrypt.compare(password, user.password);
-        if (!match) {
-            return res.status(400).json({ message: "Incorrect password" });
-        }
-        
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    // 3. Create JWT
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-        // detect HTTPS behind proxy
-        const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
-        
-        res.cookie("token", token, {
-          httpOnly: true,
-          secure: isSecure,                  // MUST be true for HTTPS
-          sameSite: "none",                   // cross-site cookie
-          domain: "onco-lens.onrender.com",   // EXACT frontend domain
-          maxAge: 24 * 60 * 60 * 1000,
-          path: "/",
-        });
+    // 4. Set cookie (production-ready)
+    // Detect HTTPS behind Render proxy
+    const isSecure = req.secure || req.headers["x-forwarded-proto"] === "https";
 
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: isSecure,                  // MUST be true for HTTPS
+      sameSite: "none",                   // cross-site cookie
+      domain: "onco-lens.onrender.com",   // EXACT frontend domain
+      maxAge: 24 * 60 * 60 * 1000,       // 1 day
+      path: "/",
+    });
 
-        return res.status(200).json({
-            message: "Login successful",
-            _id: user._id
-        });
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Internal server error" });
-    }
+    // 5. Respond with user ID (for frontend)
+    return res.status(200).json({
+      message: "Login successful",
+      _id: user._id,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 
 export const logoutController = (req, res) => {
-  const isProd = process.env.NODE_ENV === "production";
+  const isSecure = req.secure || req.headers["x-forwarded-proto"] === "https";
 
   res.clearCookie("token", {
     httpOnly: true,
-    secure: isProd,
-    sameSite: isProd ? "none" : "lax",
-    domain: isProd ? ".onrender.com" : undefined,
+    secure: isSecure,
+    sameSite: "none",
+    domain: "onco-lens.onrender.com",
     path: "/",
   });
 
   return res.status(200).json({ message: "Logout successful" });
 };
+
 
 
