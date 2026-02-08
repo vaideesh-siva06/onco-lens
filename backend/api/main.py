@@ -6,6 +6,7 @@ from PIL import Image, UnidentifiedImageError
 import io
 from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.resnet50 import preprocess_input
+import os
 
 app = FastAPI()
 
@@ -90,5 +91,8 @@ async def predict(file: UploadFile = File(...)):
         return {"error": f"Error processing image for prediction: {e}"}
 
 
+
+PORT = int(os.environ.get("PORT", 8000))
+
 if __name__ == '__main__':
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(app, host="0.0.0.0", port=PORT)
