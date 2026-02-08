@@ -8,6 +8,8 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.resnet50 import preprocess_input
 import os
 
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1' 
+
 app = FastAPI()
 
 origins = [
