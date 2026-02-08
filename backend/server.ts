@@ -27,9 +27,7 @@ const server = http.createServer(app);
 initSocketServer(server);
 
 app.use(cors({
-  origin: isProd 
-    ? "https://onco-lens.onrender.com" // your frontend production URL
-    : "http://localhost:5173",          // your local dev frontend
+  origin: "https://onco-lens.onrender.com"
   credentials: true, // must be true for cookies
 }));
 
