@@ -52,12 +52,22 @@ class_descriptions = {
 }
 
 # Load model using tensorflow.keras
-model = load_model("./cancer_model.keras")
-print("Model loaded successfully!")
+model = None
+
+def get_model():
+    global model
+    if model is None:
+        from tensorflow.keras.models import load_model
+        model = load_model("./cancer_model.keras")
+    return model
+    
+# model = load_model("./cancer_model.keras")
+# print("Model loaded successfully!")
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     try:
+        model = get_model()
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))
     except UnidentifiedImageError:
