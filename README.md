@@ -88,10 +88,14 @@ Built with **React**, **TypeScript**, **Node.js/Express**, **MongoDB**, and **So
 
 Create a `.env` file in the **server** folder with the following content:
 
+* MONGO_USER=mongo_user
+* MONGO_PASS=mongo_password
 * MONGO_URI=your_mongodb_uri
 * JWT_SECRET=your_jwt_secret
 * GOOGLE_CLIENT_ID=your_google_client_id
 * GOOGLE_CLIENT_SECRET=your_google_client_secret
+* GOOGLE_REDIRECT_URI=http://localhost:8000/auth/google/callback
+* REACT_APP_API_URL=http://backend:8000
 
 Install dependencies:
 * cd backend
