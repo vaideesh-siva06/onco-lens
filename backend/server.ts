@@ -29,7 +29,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost"], // frontend
+    origin: ["http://localhost:5173", "http://localhost", "https://onco-lens.onrender.com"], // frontend
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
 }));
