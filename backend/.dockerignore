@@ -5,7 +5,6 @@ dist
 *.log
 api/model
 api/model/**
-api/**/*.keras
 api/**/*.ipynb
 api/**/multi_cancer
 api/**/multi_cancer/**
