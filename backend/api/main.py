@@ -54,32 +54,15 @@ class_descriptions = {
 }
 
 # Load model using tensorflow.keras
-model = None
 MODEL_PATH = "./cancer_model.keras"
-GDRIVE_ID = "1M7dfqb4WBLrXlbzGTion6XlD9BRoBvOP" 
 
 def get_model():
-    print("CWD:", os.getcwd())
-    print("Files before download:", os.listdir("."))
-
     if not os.path.exists(MODEL_PATH):
-        print("Downloading model from Google Drive...")
-        result = gdown.download(
-            id=GDRIVE_ID,
-            output=MODEL_PATH,
-            quiet=False
-        )
-        print("gdown result:", result)
-
-    print("Files after download attempt:", os.listdir("."))
-
-    if not os.path.exists(MODEL_PATH):
-        raise RuntimeError("Model download failed — file not found")
-
+        raise RuntimeError("Model file missing in Docker image!")
     print("Loading model...")
     return load_model(MODEL_PATH)
 
-# Load model once at startup
+# Load once at startup
 model = get_model()
 print("Model loaded successfully!")
 
