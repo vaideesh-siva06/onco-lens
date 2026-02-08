@@ -19,7 +19,6 @@ COPY config ./config
 COPY db ./db
 COPY middleware ./middleware
 COPY utils ./utils
-COPY api/main.py ./main.py
 
 # Build TypeScript to JavaScript
 RUN npm run build
