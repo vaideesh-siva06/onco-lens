@@ -28,6 +28,7 @@ const OncoLensAIUpload: React.FC<OncoLensAIUploadProps> = ({ onCreate }) => {
         try {
             const response = await axios.post("https://onco-lens-ml.onrender.com/predict", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
+                withCredentials: true
             });
 
             console.log("Server response:", response.data);
