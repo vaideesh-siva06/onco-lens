@@ -57,10 +57,17 @@ class_descriptions = {
 MODEL_PATH = "./cancer_model.keras"
 
 def get_model():
+    print("CWD:", os.getcwd())
+    print("Files in /app:", os.listdir("/app"))
+    print("Files in /app/api:", os.listdir("/app/api"))
+    print("Files in /app/api/model:", os.listdir("/app/api/model"))
+
     if not os.path.exists(MODEL_PATH):
-        raise RuntimeError("Model file missing in Docker image!")
+        raise RuntimeError(f"Model file missing at {MODEL_PATH}")
+
     print("Loading model...")
     return load_model(MODEL_PATH)
+
 
 # Load once at startup
 model = get_model()
