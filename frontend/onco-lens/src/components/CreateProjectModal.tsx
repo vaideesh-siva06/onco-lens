@@ -130,7 +130,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                 } else {
                     // CREATE new project
                     const res = await axios.post(
-                        `http://localhost:8000/api/project/${user._id}`,
+                        `https://onco-lens-backend.onrender.com/api/project/${user._id}`,
                         {
                             name,
                             description,
