@@ -47,15 +47,15 @@ export const loginController = async (req, res) => {
 
     // 4. Set cookie (production-ready)
     // Detect HTTPS behind Render proxy
-    const isSecure = req.secure || req.headers["x-forwarded-proto"] === "https";
+    // const isSecure = req.secure || req.headers["x-forwarded-proto"] === "https";
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: isSecure,                  // MUST be true for HTTPS
+      secure: true,                  // MUST be true for HTTPS
       sameSite: "none",                   // cross-site cookie
-      domain: "onco-lens.onrender.com",   // EXACT frontend domain
+      // domain: "onco-lens.onrender.com",   // EXACT frontend domain
       maxAge: 24 * 60 * 60 * 1000,       // 1 day
-      path: "/",
+      // path: "/",
     });
 
     // 5. Respond with user ID (for frontend)
