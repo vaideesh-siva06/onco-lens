@@ -17,17 +17,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userId, setUserId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-    const socket = io("https://onco-lens-backend.onrender.com/");
+    const socketRef = React.useRef<any>(null);
 
+    // Init socket once
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        socketRef.current = io("https://onco-lens-backend.onrender.com/", { withCredentials: true });
+        return () => {
+            socketRef.current.disconnect();
+        };
+    }, []);
+
+    // Load session from localStorage
+    useEffect(() => {
         const storedUserId = localStorage.getItem('userId');
-    
-        if (token && storedUserId) {
+        if (storedUserId) {
             setIsAuthenticated(true);
             setUserId(storedUserId);
+            socketRef.current?.emit("register_user", storedUserId);
         }
-    
         setLoading(false);
     }, []);
 
@@ -41,16 +48,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
             const id = res.data._id;
 
-            // Save session
-            localStorage.setItem('token', 'true');
-            localStorage.setItem('userId', id);
-
-            // Update state
+            localStorage.setItem('userId', id); // only store userId
             setIsAuthenticated(true);
             setUserId(id);
-            socket.emit("register_user", id);
 
-            return { _id: id };   // <-- RETURN correct ID
+            socketRef.current?.emit("register_user", id);
+
+            return { _id: id };
         } catch (error) {
             console.error('Login failed', error);
             throw error;
@@ -59,17 +63,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const logout = async () => {
         try {
-            if (!socket || !isAuthenticated || !userId) return;
+            if (!userId) return;
 
             await axios.post('https://onco-lens-backend.onrender.com/auth/logout', {}, { withCredentials: true });
 
-            localStorage.removeItem('token');
             localStorage.removeItem('userId');
-
             setIsAuthenticated(false);
             setUserId(null);
 
-            socket.emit("disconnect_user", userId);
+            socketRef.current?.emit("disconnect_user", userId);
 
             localStorage.setItem('activePage', 'projects');
             localStorage.setItem('activeTab', 'Home');
