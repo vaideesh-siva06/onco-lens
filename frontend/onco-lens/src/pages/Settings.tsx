@@ -24,7 +24,7 @@ const Settings = () => {
     const nameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
 
-    const socket = io("http://localhost:8000");
+    const socket = io("https://onco-lens-backend.onrender.com");
     const navigate = useNavigate();
 
     useEffect(() => {
