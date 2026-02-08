@@ -69,7 +69,17 @@ export const loginController = async (req, res) => {
 
 
 export const logoutController = (req, res) => {
-    res.clearCookie("token");
-    return res.status(200).json({ message: "Logout successful" });
+  const isProd = process.env.NODE_ENV === "production";
+
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
+    domain: isProd ? ".onrender.com" : undefined,
+    path: "/",
+  });
+
+  return res.status(200).json({ message: "Logout successful" });
 };
+
 
