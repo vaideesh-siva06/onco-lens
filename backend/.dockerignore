@@ -3,8 +3,6 @@ dist
 .git
 .env
 *.log
-api/model
-api/model/**
 api/**/*.ipynb
 api/**/multi_cancer
 api/**/multi_cancer/**
