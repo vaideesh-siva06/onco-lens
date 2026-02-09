@@ -7,7 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useUser } from '../../context/UserContext';
 import { io } from 'socket.io-client';
 
-const socket = io("https://onco-lens-backend.onrender.com/");
+const socket = io("https://onco-lens-backend-hq5x.onrender.com");
 
 const Login: React.FC = () => {
 
