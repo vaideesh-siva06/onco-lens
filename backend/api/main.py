@@ -8,6 +8,7 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.resnet50 import preprocess_input
 import os
 import gdown 
+import requests
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1' 
 
@@ -56,20 +57,28 @@ class_descriptions = {
 # Path where the model should live
 MODEL_PATH = "/app/model/cancer_model.keras"
 
-# Google Drive direct download link
-GDRIVE_URL = "https://drive.google.com/uc?export=download&id=1M7dfqb4WBLrXlbzGTion6XlD9BRoBvOP"
+# Dropbox direct download link
+DROPBOX_URL = "https://www.dropbox.com/scl/fi/c4mrmwsy3doy38sxejdxf/cancer_model.keras?rlkey=mmmgdzv834uumeezb8g970fsj&e=1&st=9te75o13&dl=1"
+
+def download_model(url: str, dest_path: str):
+    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+    print(f"Downloading model from Dropbox to {dest_path}...")
+    response = requests.get(url, stream=True)
+    response.raise_for_status()  # Raise error if download fails
+
+    with open(dest_path, "wb") as f:
+        for chunk in response.iter_content(chunk_size=8192):
+            if chunk:
+                f.write(chunk)
+    print("Download complete.")
 
 def get_model():
     print("CWD:", os.getcwd())
     print("Files in /app:", os.listdir("/app"))
     print("Files in /app/model:", os.listdir("/app/model"))
 
-    # Download the model if it doesn't exist
     if not os.path.exists(MODEL_PATH):
-        print(f"Model not found at {MODEL_PATH}. Downloading from Google Drive...")
-        os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
-        gdown.download(GDRIVE_URL, MODEL_PATH, quiet=False)
-        print("Download complete.")
+        download_model(DROPBOX_URL, MODEL_PATH)
 
     print("Loading model...")
     model = load_model(MODEL_PATH)
