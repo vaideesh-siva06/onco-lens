@@ -9,4 +9,4 @@ Pillow==10.1.0
 # TensorFlow (includes Keras)
 tensorflow==2.20.0
 
-gdown==4.7.1
+requests==2.31.0
