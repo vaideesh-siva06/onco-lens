@@ -175,6 +175,7 @@ const Settings = () => {
 
 
                 window.removeEventListener("message", listener);
+                window.close();
 
                 // ✅ Do NOT navigate, the user is already on the main page
                 // navigate(`/${user._id}/dashboard`);  <-- remove this
