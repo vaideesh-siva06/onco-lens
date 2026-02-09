@@ -53,20 +53,28 @@ class_descriptions = {
     "lung_scc": "Lung squamous cell carcinoma — lung cancer from squamous cells. (lung_scc)"
 }
 
-# Load model using tensorflow.keras
+# Path where the model should live
 MODEL_PATH = "/app/model/cancer_model.keras"
+
+# Google Drive direct download link
+GDRIVE_URL = "https://drive.google.com/uc?export=download&id=1M7dfqb4WBLrXlbzGTion6XlD9BRoBvOP"
 
 def get_model():
     print("CWD:", os.getcwd())
     print("Files in /app:", os.listdir("/app"))
     print("Files in /app/model:", os.listdir("/app/model"))
 
+    # Download the model if it doesn't exist
     if not os.path.exists(MODEL_PATH):
-        raise RuntimeError(f"Model file missing at {MODEL_PATH}")
+        print(f"Model not found at {MODEL_PATH}. Downloading from Google Drive...")
+        os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
+        gdown.download(GDRIVE_URL, MODEL_PATH, quiet=False)
+        print("Download complete.")
 
     print("Loading model...")
-    return load_model(MODEL_PATH)
-
+    model = load_model(MODEL_PATH)
+    print("Model loaded successfully.")
+    return model
 
 
 # Load once at startup
