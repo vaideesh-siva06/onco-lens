@@ -5,4 +5,4 @@ FROM redis:7-alpine
 EXPOSE 6379
 
 # Start Redis server
-CMD ["redis-server"]
+CMD ["redis-server", "--bind", "127.0.0.1", "--requirepass", "yourStrongPassword"]
