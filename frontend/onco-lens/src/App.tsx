@@ -26,7 +26,7 @@ import { useUser } from '../context/UserContext';
 
 const App: React.FC = () => {
 
-  const { isAuthenticated, userId, loading } = useAuth(); // ✅ get all from context
+  const { isAuthenticated, userId, loading, logout } = useAuth(); // ✅ get all from context
   const location = useLocation();
   const isMeetingPage = location.pathname.startsWith("/meeting/");
   const hideFooter = isMeetingPage;
@@ -40,6 +40,11 @@ const App: React.FC = () => {
     }
 
     console.log(user);
+
+    if (user == null) {
+      logout();
+    }
+    
   }, []);
 
   useEffect(() => {
