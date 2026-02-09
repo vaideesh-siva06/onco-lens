@@ -45,7 +45,7 @@ export const DocumentProvider: React.FC<{ children: ReactNode }> = ({
     try {
       setIsLoading(true);
       const res = await axios.get(
-        `https://onco-lens-backend.onrender.com/api/project/${projectId}/getAllDocuments`,
+        `https://onco-lens-backend-hq5x.onrender.com/api/project/${projectId}/getAllDocuments`,
         { withCredentials: true }
       );
       setDocuments(prev => {
