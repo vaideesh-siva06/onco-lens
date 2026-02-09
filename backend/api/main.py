@@ -128,7 +128,11 @@ async def predict(file: UploadFile = File(...)):
 
 
 
-PORT = int(os.environ.get("PORT", 8001))
-
-if __name__ == '__main__':
-    uvicorn.run(app, host="0.0.0.0", port=PORT)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))  # Render sets PORT
+    uvicorn.run(
+        "main:app",      # replace "main:app" if your FastAPI app is named differently
+        host="0.0.0.0",  # must listen on all interfaces
+        port=port,
+        reload=False     # disable reload in production
+    )
