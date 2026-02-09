@@ -81,7 +81,7 @@ const MembersPage: React.FC = () => {
 
             // Make POST request
             const response = await axios.post(
-                `https://onco-lens-backend.onrender.com/api/project/${id}/member`,
+                `https://onco-lens-backend-hq5x.onrender.com/api/project/${id}/member`,
                 { email },
                 { withCredentials: true, headers: { "Content-Type": "application/json" } }
             );
@@ -113,7 +113,7 @@ const MembersPage: React.FC = () => {
     const handleDeleteMember = async (email: string) => {
         try {
             await axios.delete(
-                `https://onco-lens-backend.onrender.com/api/project/${id}/member`,
+                `https://onco-lens-backend-hq5x.onrender.com/api/project/${id}/member`,
                 {
                     data: { email, currUserId: user.user?._id },
                     withCredentials: true
