@@ -30,7 +30,7 @@ const MeetingPage: React.FC = () => {
     const handleStartMeeting = async (meeting: any) => {
         try {
             await axios.post(
-                `https://onco-lens-backend.onrender.com/api/meeting/${meeting._id}/start`,
+                `https://onco-lens-backend-hq5x.onrender.com/api/meeting/${meeting._id}/start`,
                 { adminId: user?._id, meetingId: meeting._id },
                 { withCredentials: true }
             );
