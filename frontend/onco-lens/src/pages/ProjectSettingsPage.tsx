@@ -24,7 +24,7 @@ const ProjectSettingsPage = () => {
         try {
 
             await axios.delete(
-                `https://onco-lens-backend.onrender.com/api/project/${id}/member`,
+                `https://onco-lens-backend-hq5x.onrender.com/api/project/${id}/member`,
                 {
                     data: { email, currUserId: user?._id },
                     withCredentials: true
