@@ -69,8 +69,15 @@ def download_model(url: str, dest_path: str):
             if chunk:
                 f.write(chunk)
     print("Download complete.")
+    
+model = None
 
 def get_model():
+    global model
+
+    if model is not None:
+        return model
+
     print("CWD:", os.getcwd())
     print("Files in /app:", os.listdir("/app"))
     print("Files in /app/model:", os.listdir("/app/model"))
@@ -78,19 +85,18 @@ def get_model():
     if not os.path.exists(MODEL_PATH):
         download_model(DROPBOX_URL, MODEL_PATH)
 
-    print("Loading model...")
-    model = load_model(MODEL_PATH)
+    print("Loading model (compile=False)...")
+    model = load_model(MODEL_PATH, compile=False)
     print("Model loaded successfully.")
+
     return model
-
-
-# Load once at startup
-model = get_model()
+    
 print("Model loaded successfully!")
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     try:
+        model = get_model()
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))
     except UnidentifiedImageError:
