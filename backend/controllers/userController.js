@@ -358,7 +358,7 @@ export const googleOAuthCallback = async (req, res) => {
     <script>
       window.opener.postMessage(
         { googleConnected: true, accessToken: "${tokens.access_token}" },
-        "http://localhost:5173"
+        "https://onco-lens.onrender.com/"
       );
       window.close(); // closes the popup
     </script>
