@@ -4,7 +4,7 @@ A **full-stack web application** designed to streamline **cancer research projec
 
 Built with **React**, **TypeScript**, **Node.js/Express**, **MongoDB**, and **Socket.IO** for real-time collaboration.
 
-#### Live Site: https://onco-lens.onrender.com/
+#### Live Site: https://onco-lens-sxrc.onrender.com/
 ---
 
 ## Table of Contents
