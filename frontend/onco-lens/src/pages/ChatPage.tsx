@@ -182,7 +182,7 @@ const ChatPage = () => {
         // // console.log("THIS IS LOAD CHAT WITH CONTACT");
 
         try {
-            const res = await axios.get(`https://onco-lens-backend.onrender.com/api/chat/${user.user._id}/${contactId}?projectId=${projectId}`, {
+            const res = await axios.get(`https://onco-lens-backend-hq5x.onrender.com/api/chat/${user.user._id}/${contactId}?projectId=${projectId}`, {
                 withCredentials: true,
             });
 
@@ -259,7 +259,7 @@ const ChatPage = () => {
             await Promise.all(contactsToFetch.map(async (c) => {
                 try {
                     const res = await axios.get(
-                        `https://onco-lens-backend.onrender.com/api/chat/${user?.user?._id}/${c.id}?projectId=${projectId}`,
+                        `https://onco-lens-backend-hq5x.onrender.com/api/chat/${user?.user?._id}/${c.id}?projectId=${projectId}`,
                         { withCredentials: true }
                     );
                     const chat = res.data;
@@ -385,7 +385,7 @@ const ChatPage = () => {
     // 1. Initialize Socket
     // -----------------------------
     useEffect(() => {
-        const s = io("https://onco-lens-backend.onrender.com", { transports: ["websocket"] });
+        const s = io("https://onco-lens-backend-hq5x.onrender.com", { transports: ["websocket"] });
         setSocket(s);
 
         s.on("connect", () => {
@@ -559,7 +559,7 @@ const ChatPage = () => {
 
         try {
             // Send message to backend
-            const res = await axios.post('https://onco-lens-backend.onrender.com/api/chat/send', messagePayload, {
+            const res = await axios.post('https://onco-lens-backend-hq5x.onrender.com/api/chat/send', messagePayload, {
                 withCredentials: true,
             });
 
