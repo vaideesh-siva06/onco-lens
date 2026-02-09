@@ -16,7 +16,7 @@ const Signup: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        axios.post("https://onco-lens-backend.onrender.com/auth/signup", { name, email, password })
+        axios.post("https://onco-lens-backend-hq5x.onrender.com/auth/signup", { name, email, password })
             .then(res => {
                 console.log(res.data);
                 toast.success("Successfully signed up!");
