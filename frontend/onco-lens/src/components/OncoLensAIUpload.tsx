@@ -58,7 +58,7 @@ const OncoLensAIUpload: React.FC<OncoLensAIUploadProps> = ({ onCreate }) => {
                     <p className="text-orange-500 mb-4">
                         Upload an image to get a prediction! <br />
                         
-                        <span className="mt-10">(Note: Our ML model may sometimes fail to process large images on the Render free plan, which has a memory limit of 512 MB. If your upload doesn’t return a prediction, try a smaller image or check back later.)</span>
+                        <span className="mt-30 mb-30 italic">(Note: Our ML model may sometimes fail to process large images on the Render free plan, which has a memory limit of 512 MB. If your upload doesn’t return a prediction, try a smaller image or check back later.)</span>
                     </p>
                 </>
             )}
