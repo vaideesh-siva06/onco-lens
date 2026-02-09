@@ -28,7 +28,7 @@ const ProjectHomePage = ({ project }: { project: Project }) => {
     const deleteDocument = async (documentId: string) => {
         try {
             await axios.delete(
-                `https://onco-lens-backend.onrender.com/api/project/${project._id}/deleteDocument`,
+                `https://onco-lens-backend-hq5x.onrender.com/api/project/${project._id}/deleteDocument`,
                 {
                     data: {
                         documentId,
