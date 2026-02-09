@@ -21,7 +21,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     // Init socket once
     useEffect(() => {
-        socketRef.current = io("https://onco-lens-backend.onrender.com/", { withCredentials: true });
+        socketRef.current = io("https://onco-lens-backend-hq5x.onrender.com/", { withCredentials: true });
         return () => {
             socketRef.current.disconnect();
         };
@@ -41,7 +41,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const login = async (email: string, password: string): Promise<{ _id: string }> => {
         try {
             const res = await axios.post(
-                'https://onco-lens-backend.onrender.com/auth/login',
+                'https://onco-lens-backend-hq5x.onrender.com/auth/login',
                 { email, password },
                 { withCredentials: true }
             );
@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         try {
             if (!userId) return;
 
-            await axios.post('https://onco-lens-backend.onrender.com/auth/logout', {}, { withCredentials: true });
+            await axios.post('https://onco-lens-backend-hq5x.onrender.com/auth/logout', {}, { withCredentials: true });
 
             localStorage.removeItem('userId');
             setIsAuthenticated(false);
