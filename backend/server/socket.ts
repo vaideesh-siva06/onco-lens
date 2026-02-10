@@ -22,9 +22,9 @@ export const getIO = () => {
 export const initSocketServer = async (server: any) => {
     io = new Server(server, {
         cors: {
-            origin: ["http://localhost:5173", "http://localhost", "https://onco-lens-sxrc.onrender.com/"],
+            origin: "https://onco-lens-sxrc.onrender.com",
             methods: ["GET", "POST"],
-            credentials: true,
+            credentials: true
         },
         pingInterval: 10000,
         pingTimeout: 5000,
