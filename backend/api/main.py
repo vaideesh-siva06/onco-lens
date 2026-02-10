@@ -10,6 +10,7 @@ from PIL import Image, UnidentifiedImageError
 from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.resnet50 import preprocess_input
 import io
+import requests
 
 app = FastAPI()
 
