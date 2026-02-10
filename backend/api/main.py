@@ -1,23 +1,25 @@
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '-1' 
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import uvicorn
 import numpy as np
 from PIL import Image, UnidentifiedImageError
-import io
 from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.resnet50 import preprocess_input
-import requests
+import io
 
 app = FastAPI()
 
+# ✅ Correct CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://onco-lens-sxrc.onrender.com"],        
+    allow_origins=["https://onco-lens-sxrc.onrender.com"],  # exact frontend URL
     allow_credentials=True,
-    allow_methods=["*"],        
-    allow_headers=["*"],        
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 class_names = [
