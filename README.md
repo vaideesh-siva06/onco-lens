@@ -2,7 +2,7 @@
 
 A **full-stack web application** designed to streamline **cancer research projects**, team collaboration, chat, and document sharing. Integrated with **Google Drive** for storing research documents and **Redis** for caching project and document data.  
 
-Built with **React**, **TypeScript**, **Node.js/Express**, **MongoDB**, and **Socket.IO** for real-time collaboration.
+Developed a full-stack web application with **React (TypeScript)**, **Node.js/Express**, and **MongoDB**; implemented real-time collaboration via **Socket.IO** and deployed ML inference endpoints using **FastAPI** with **TensorFlow/Keras** models
 
 ## Table of Contents
 
