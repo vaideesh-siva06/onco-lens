@@ -21,14 +21,25 @@ export const getIO = () => {
 };
 
 export const initSocketServer = async (server: any) => {
+    const allowedOrigins = [
+        "https://onco-lens.vaideesh4.workers.dev",
+        "https://onco-lens-sxrc.onrender.com"
+    ];
+    
     io = new Server(server, {
         cors: {
-            origin: getAllowedOrigins(),
-            methods: ["GET", "POST"],
-            credentials: true
-        },
-        pingInterval: 10000,
-        pingTimeout: 5000,
+            origin: (origin, callback) => {
+                console.log("Incoming Socket Origin:", origin);
+    
+                if (!origin || allowedOrigins.includes(origin)) {
+                    callback(null, true);
+                } else {
+                    callback(new Error("Socket CORS blocked"));
+                }
+            },
+            credentials: true,
+            methods: ["GET", "POST"]
+        }
     });
 
     rooms.clear();
