@@ -27,7 +27,10 @@ const server = http.createServer(app);
 // Initialize Socket.IO
 initSocketServer(server);
 
-const allowedOrigins = getAllowedOrigins();
+const allowedOrigins = [
+  "https://onco-lens.vaideesh4.workers.dev",
+  "https://onco-lens-sxrc.onrender.com"
+];
 
 app.use(cors({
   origin: (origin, callback) => {
