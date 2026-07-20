@@ -4,6 +4,7 @@ import CreateMeetingModal from "../components/CreateMeetingModal";
 import { useProjects } from "../../context/ProjectsContext";
 import { useUser } from "../../context/UserContext";
 import axios from "axios";
+import { API_BASE_URL } from "../config/api";
 import { toast } from "react-toastify";
 
 const MeetingPage: React.FC = () => {
@@ -30,7 +31,7 @@ const MeetingPage: React.FC = () => {
     const handleStartMeeting = async (meeting: any) => {
         try {
             await axios.post(
-                `https://onco-lens-backend-hq5x.onrender.com/api/meeting/${meeting._id}/start`,
+                `${API_BASE_URL}/api/meeting/${meeting._id}/start`,
                 { adminId: user?._id, meetingId: meeting._id },
                 { withCredentials: true }
             );

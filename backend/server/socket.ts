@@ -1,5 +1,6 @@
 import { Server, Socket } from "socket.io";
 import MeetingModel from "../models/MeetingModel.js";
+import { getAllowedOrigins } from "../config/corsOrigins.js";
 // import UserModel from "../models/UserModel";
 
 interface RoomUser {
@@ -22,7 +23,7 @@ export const getIO = () => {
 export const initSocketServer = async (server: any) => {
     io = new Server(server, {
         cors: {
-            origin: "https://onco-lens-sxrc.onrender.com",
+            origin: getAllowedOrigins(),
             methods: ["GET", "POST"],
             credentials: true
         },

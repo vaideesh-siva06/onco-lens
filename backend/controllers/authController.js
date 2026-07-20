@@ -5,10 +5,11 @@ import jwt from 'jsonwebtoken';
 export const signupController = async (req, res) => {
 
     const { name, email, password } = req.body;
+    const normalizedEmail = email?.trim().toLowerCase();
 
     try {
 
-        const existingUser = await UserModel.findOne({ email });
+        const existingUser = await UserModel.findOne({ email: normalizedEmail });
 
         if (existingUser) {
             return res.status(400).json({ message: "User already exists" });
@@ -17,7 +18,7 @@ export const signupController = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         console.log(hashedPassword);
 
-        const user = await UserModel.create({ name, email, password: hashedPassword });
+        const user = await UserModel.create({ name, email: normalizedEmail, password: hashedPassword });
         res.status(201).json({ message: "User created successfully" });
 
     } catch (error) {
@@ -43,12 +44,14 @@ export const loginController = async (req, res) => {
     // Create JWT (expires in 1 hour)
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
+    const isProd = process.env.NODE_ENV === "production";
+
     // Set HTTP-only cookie (works in Safari & Chrome)
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,         // REQUIRED on Render (HTTPS)
-      sameSite: "none",     // REQUIRED for cross-site
-      path: "/",            // required
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
+      path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -62,10 +65,12 @@ export const loginController = async (req, res) => {
 
 
 export const logoutController = (req, res) => {
+  const isProd = process.env.NODE_ENV === "production";
+
   res.clearCookie("token", {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
       path: "/",
     });
 

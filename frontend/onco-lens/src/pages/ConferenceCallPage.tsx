@@ -20,8 +20,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 import { Tooltip } from "react-tooltip";
 import 'react-tooltip/dist/react-tooltip.css'
+import { API_BASE_URL } from '../config/api';
 
-const SOCKET_SERVER_URL = "https://onco-lens-backend-hq5x.onrender.com";
+const SOCKET_SERVER_URL = API_BASE_URL;
 
 const ICE_SERVERS = {
     iceServers: [

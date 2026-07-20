@@ -2,8 +2,9 @@ import { useNavigate, useParams } from "react-router";
 import { useProjects } from "../../context/ProjectsContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../config/api";
 import { FaTrash } from "react-icons/fa";
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useUser } from "../../context/UserContext";
 
@@ -81,7 +82,7 @@ const MembersPage: React.FC = () => {
 
             // Make POST request
             const response = await axios.post(
-                `https://onco-lens-backend-hq5x.onrender.com/api/project/${id}/member`,
+                `${API_BASE_URL}/api/project/${id}/member`,
                 { email },
                 { withCredentials: true, headers: { "Content-Type": "application/json" } }
             );
@@ -113,7 +114,7 @@ const MembersPage: React.FC = () => {
     const handleDeleteMember = async (email: string) => {
         try {
             await axios.delete(
-                `https://onco-lens-backend-hq5x.onrender.com/api/project/${id}/member`,
+                `${API_BASE_URL}/api/project/${id}/member`,
                 {
                     data: { email, currUserId: user.user?._id },
                     withCredentials: true
@@ -147,7 +148,7 @@ const MembersPage: React.FC = () => {
 
     return (
         <div>
-            <ToastContainer
+            {/* <ToastContainer
         position="top-center"
         autoClose={2000}
         hideProgressBar
@@ -155,7 +156,7 @@ const MembersPage: React.FC = () => {
         pauseOnHover
         theme="light"
         closeButton={false}
-      />
+      /> */}
             <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
                 <h2 className="text-3xl font-semibold mb-6 text-gray-800">Team Members</h2>
 

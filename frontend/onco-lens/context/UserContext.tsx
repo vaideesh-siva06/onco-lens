@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../src/config/api';
 
 interface User {
     _id: string;
@@ -31,7 +32,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     const getUserByEmail = async (email: string) => {
         try {
             const res = await axios.get(
-                `https://onco-lens-backend-hq5x.onrender.com/api/user/email/${email}`,
+                `${API_BASE_URL}/api/user/email/${email}`,
                 { withCredentials: true }
             );
             return res.data;    // <-- return user data
@@ -44,7 +45,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     // Fetch user info
     const getUserInfo = async (id: string) => {
         try {
-            const res = await axios.get(`https://onco-lens-backend-hq5x.onrender.com/api/user/${id}`, { withCredentials: true });
+            const res = await axios.get(`${API_BASE_URL}/api/user/${id}`, { withCredentials: true });
             setUser(res.data);
         } catch (error) {
             console.error('Error fetching user info:', error);
@@ -57,7 +58,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     // Update user info
     const updateUser = async (id: string, data: { name: string; email: string; password?: string }) => {
         try {
-            const response = await axios.put(`https://onco-lens-backend-hq5x.onrender.com/api/user/${id}`, data, { withCredentials: true });
+            const response = await axios.put(`${API_BASE_URL}/api/user/${id}`, data, { withCredentials: true });
             setUser(response.data.user); // update context with the user object, not the entire response
             localStorage.setItem("userId", response.data.user._id);
 

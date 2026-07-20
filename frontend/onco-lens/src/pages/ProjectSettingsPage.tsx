@@ -3,6 +3,7 @@ import { useProjects } from '../../context/ProjectsContext';
 import { useNavigate, useParams } from 'react-router';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 
 const ProjectSettingsPage = () => {
   const { user } = useUser();
@@ -24,7 +25,7 @@ const ProjectSettingsPage = () => {
         try {
 
             await axios.delete(
-                `https://onco-lens-backend-hq5x.onrender.com/api/project/${id}/member`,
+                `${API_BASE_URL}/api/project/${id}/member`,
                 {
                     data: { email, currUserId: user?._id },
                     withCredentials: true

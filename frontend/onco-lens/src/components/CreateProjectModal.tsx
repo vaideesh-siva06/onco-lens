@@ -6,6 +6,7 @@ import { useUser } from '../../context/UserContext';
 import { useProjects } from '../../context/ProjectsContext';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { API_BASE_URL } from '../config/api';
 
 interface CreateProjectModalProps {
     isOpen: boolean;
@@ -130,7 +131,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                 } else {
                     // CREATE new project
                     const res = await axios.post(
-                        `https://onco-lens-backend.onrender.com/api/project/${user._id}`,
+                        `${API_BASE_URL}/api/project/${user._id}`,
                         {
                             name,
                             description,

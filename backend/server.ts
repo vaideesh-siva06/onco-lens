@@ -13,6 +13,7 @@ import projectRouter from './routes/projectRoutes.js';
 import meetingRouter from './routes/meetingRoutes.js';
 import chatRouter from './routes/chatRoutes.js';
 import { googleAuthCallback, googleAuthRedirect } from './controllers/projectController.js';
+import { getAllowedOrigins } from './config/corsOrigins.js';
 
 dotenv.config();
 
@@ -26,9 +27,17 @@ const server = http.createServer(app);
 // Initialize Socket.IO
 initSocketServer(server);
 
+const allowedOrigins = getAllowedOrigins();
+
 app.use(cors({
-  origin: "https://onco-lens-sxrc.onrender.com",
-  credentials: true // must be true for cookies
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS: origin ${origin} not allowed`));
+    }
+  },
+  credentials: true,
 }));
 
 app.use(express.json());
@@ -50,4 +59,7 @@ connectDB()
             console.log(`Server running on port ${PORT}`);
         });
     })
-    .catch(err => console.log('MongoDB connection error:', err));
+    .catch((err) => {
+        console.error('MongoDB connection error:', err);
+        process.exit(1);
+    });

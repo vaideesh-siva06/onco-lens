@@ -5,6 +5,7 @@ import io, { Socket } from "socket.io-client";
 import { useProjects } from '../../context/ProjectsContext';
 import { useUser } from '../../context/UserContext';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 import EmojiPicker from 'emoji-picker-react';
 
 interface Message {
@@ -182,7 +183,7 @@ const ChatPage = () => {
         // // console.log("THIS IS LOAD CHAT WITH CONTACT");
 
         try {
-            const res = await axios.get(`https://onco-lens-backend-hq5x.onrender.com/api/chat/${user.user._id}/${contactId}?projectId=${projectId}`, {
+            const res = await axios.get(`${API_BASE_URL}/api/chat/${user.user._id}/${contactId}?projectId=${projectId}`, {
                 withCredentials: true,
             });
 
@@ -259,7 +260,7 @@ const ChatPage = () => {
             await Promise.all(contactsToFetch.map(async (c) => {
                 try {
                     const res = await axios.get(
-                        `https://onco-lens-backend-hq5x.onrender.com/api/chat/${user?.user?._id}/${c.id}?projectId=${projectId}`,
+                        `${API_BASE_URL}/api/chat/${user?.user?._id}/${c.id}?projectId=${projectId}`,
                         { withCredentials: true }
                     );
                     const chat = res.data;
@@ -385,7 +386,7 @@ const ChatPage = () => {
     // 1. Initialize Socket
     // -----------------------------
     useEffect(() => {
-        const s = io("https://onco-lens-backend-hq5x.onrender.com", { transports: ["websocket"] });
+        const s = io(API_BASE_URL, { transports: ["websocket"] });
         setSocket(s);
 
         s.on("connect", () => {
@@ -559,7 +560,7 @@ const ChatPage = () => {
 
         try {
             // Send message to backend
-            const res = await axios.post('https://onco-lens-backend-hq5x.onrender.com/api/chat/send', messagePayload, {
+            const res = await axios.post(`${API_BASE_URL}/api/chat/send`, messagePayload, {
                 withCredentials: true,
             });
 

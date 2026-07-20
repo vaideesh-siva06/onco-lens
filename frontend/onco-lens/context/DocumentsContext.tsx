@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import axios from "axios";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { API_BASE_URL } from '../src/config/api';
 
 export interface Document {
   _id: string;
@@ -45,7 +46,7 @@ export const DocumentProvider: React.FC<{ children: ReactNode }> = ({
     try {
       setIsLoading(true);
       const res = await axios.get(
-        `https://onco-lens-backend-hq5x.onrender.com/api/project/${projectId}/getAllDocuments`,
+        `${API_BASE_URL}/api/project/${projectId}/getAllDocuments`,
         { withCredentials: true }
       );
       setDocuments(prev => {

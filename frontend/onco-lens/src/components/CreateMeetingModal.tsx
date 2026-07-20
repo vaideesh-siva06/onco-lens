@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUser } from "../../context/UserContext";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface Props {
@@ -37,7 +37,7 @@ const CreateMeetingModal: React.FC<Props> = ({ onClose, onCreate }) => {
     return (
         <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50 backdrop-blur-sm">
             <div className="bg-white w-96 rounded-2xl p-6 shadow-xl border border-gray-200">
-                <ToastContainer
+                {/* <ToastContainer
                     position="top-center"
                     autoClose={2000}
                     hideProgressBar
@@ -45,7 +45,7 @@ const CreateMeetingModal: React.FC<Props> = ({ onClose, onCreate }) => {
                     pauseOnHover
                     theme="light"
                     closeButton={false}
-                />
+                /> */}
 
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">
                     Create Meeting

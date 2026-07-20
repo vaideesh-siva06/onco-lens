@@ -2,12 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useUser } from '../../context/UserContext';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { io } from 'socket.io-client';
 import { useAuth } from '../../context/AuthContext';
 import { useDocuments } from '../../context/DocumentsContext';
 import { useProjects } from '../../context/ProjectsContext';
+import { API_BASE_URL } from '../config/api';
 
 const Settings = () => {
     const { user, setUser, updateUser, getUserInfo } = useUser();
@@ -24,7 +25,7 @@ const Settings = () => {
     const nameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
 
-    const socket = io("https://onco-lens-backend-hq5x.onrender.com");
+    const socket = io(API_BASE_URL);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -123,7 +124,7 @@ const Settings = () => {
     const handleDelete = async () => {
         try {
             socket.emit("leave_room", id);
-            await axios.delete(`https://onco-lens-backend-hq5x.onrender.com/api/user/${id}`, { withCredentials: true });
+            await axios.delete(`${API_BASE_URL}/api/user/${id}`, { withCredentials: true });
             setUser(null);
             logout();
             navigate("/"); // redirect after delete
@@ -137,7 +138,7 @@ const Settings = () => {
 
         try {
             const res = await axios.get(
-            `https://onco-lens-backend-hq5x.onrender.com/api/user/auth/google/reconnect`,
+            `${API_BASE_URL}/api/user/auth/google/reconnect`,
             { params: { userId: user._id },
               withCredentials: true
             }
@@ -194,7 +195,7 @@ const Settings = () => {
 
     return (
         <div className="w-11/12 md:w-10/12 lg:w-8/12 mx-auto mt-40">
-            <ToastContainer
+            {/* <ToastContainer
             position="top-center"
             autoClose={2000}
             hideProgressBar
@@ -202,7 +203,7 @@ const Settings = () => {
             pauseOnHover
             theme="light"
             closeButton={false}
-            />
+            /> */}
 
             {/* Page Header */}
             <div className="mb-10">

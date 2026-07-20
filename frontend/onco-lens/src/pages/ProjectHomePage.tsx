@@ -5,7 +5,8 @@ import { useDocuments } from '../../context/DocumentsContext';
 import { useUser } from '../../context/UserContext';
 import { FaTrash } from 'react-icons/fa';
 import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
+import { API_BASE_URL } from '../config/api';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ProjectHomePage = ({ project }: { project: Project }) => {
@@ -28,7 +29,7 @@ const ProjectHomePage = ({ project }: { project: Project }) => {
     const deleteDocument = async (documentId: string) => {
         try {
             await axios.delete(
-                `https://onco-lens-backend-hq5x.onrender.com/api/project/${project._id}/deleteDocument`,
+                `${API_BASE_URL}/api/project/${project._id}/deleteDocument`,
                 {
                     data: {
                         documentId,
@@ -46,7 +47,7 @@ const ProjectHomePage = ({ project }: { project: Project }) => {
 
     return (
         <div className="px-4 md:px-8 lg:px-16 py-6">
-            <ToastContainer
+            {/* <ToastContainer
                 position="top-center"
                 autoClose={2000}
                 hideProgressBar
@@ -54,7 +55,7 @@ const ProjectHomePage = ({ project }: { project: Project }) => {
                 pauseOnHover
                 theme="light"
                 closeButton={false}
-            />
+            /> */}
 
             {/* Project Header */}
             <div className="mb-6">

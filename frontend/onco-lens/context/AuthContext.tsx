@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import axios from 'axios';
 import { io } from 'socket.io-client';
+import { API_BASE_URL } from '../src/config/api';
 
 interface AuthContextType {
     isAuthenticated: boolean;
@@ -21,7 +22,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     // Init socket once
     useEffect(() => {
-        socketRef.current = io("https://onco-lens-backend-hq5x.onrender.com/", { withCredentials: true });
+        socketRef.current = io(API_BASE_URL, { withCredentials: true });
         return () => {
             socketRef.current.disconnect();
         };
@@ -41,7 +42,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const login = async (email: string, password: string): Promise<{ _id: string }> => {
         try {
             const res = await axios.post(
-                'https://onco-lens-backend-hq5x.onrender.com/auth/login',
+                `${API_BASE_URL}/auth/login`,
                 { email, password },
                 { withCredentials: true }
             );
@@ -65,7 +66,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         try {
             if (!userId) return;
 
-            await axios.post('https://onco-lens-backend-hq5x.onrender.com/auth/logout', {}, { withCredentials: true });
+            await axios.post(`${API_BASE_URL}/auth/logout`, {}, { withCredentials: true });
 
             localStorage.removeItem('userId');
             setIsAuthenticated(false);

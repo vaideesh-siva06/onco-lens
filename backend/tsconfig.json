@@ -18,7 +18,8 @@
     "controllers/**/*.ts",
     "models/**/*.ts",
     "routes/**/*.ts",
-    "middleware/**/*.ts"
+    "middleware/**/*.ts",
+    "config/**/*.ts"
     ],
   "exclude": ["node_modules", "dist"]
 }

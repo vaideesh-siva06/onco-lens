@@ -1,6 +1,7 @@
 import { FaBrain } from 'react-icons/fa';
 import axios from 'axios';
 import React, { useState } from 'react';
+import { BACKEND_ML_URL } from '../config/api';
 
 interface OncoLensAIUploadProps {
     onCreate?: (data: any) => void; // optional callback
@@ -26,7 +27,7 @@ const OncoLensAIUpload: React.FC<OncoLensAIUploadProps> = ({ onCreate }) => {
         formData.append("file", file);
 
         try {
-            const response = await axios.post("https://onco-lens-ml-p713.onrender.com/predict", formData, {
+            const response = await axios.post(`${BACKEND_ML_URL}/predict`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
                 withCredentials: true
             });

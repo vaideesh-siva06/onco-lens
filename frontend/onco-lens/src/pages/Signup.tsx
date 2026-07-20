@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { API_BASE_URL } from '../config/api';
 
 const Signup: React.FC = () => {
     const [name, setName] = useState('');
@@ -16,20 +17,23 @@ const Signup: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        axios.post("https://onco-lens-backend-hq5x.onrender.com/auth/signup", { name, email, password })
+        axios.post(`${API_BASE_URL}/auth/signup`, { name, email, password })
             .then(res => {
                 console.log(res.data);
                 toast.success("Successfully signed up!");
             })
             .catch(err => {
                 console.log(err);
-                toast.error("User already exists!");
+                const message =
+                    err.response?.data?.message ||
+                    "Signup failed. Please try again.";
+                toast.error(message);
             })
     };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-50 to-gray-100 px-4">
-            <ToastContainer
+            {/* <ToastContainer
                 position="top-center"
                 autoClose={2000}
                 hideProgressBar
@@ -37,7 +41,7 @@ const Signup: React.FC = () => {
                 pauseOnHover
                 theme="light"
                 closeButton={false}
-            />
+            /> */}
 
             <motion.div
                 initial={{ opacity: 0, y: 30 }}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 import ProjectPageSidebar from '../components/ProjectPageSidebar';
 import MembersPage from './MembersPage';
 import ChatPage from './ChatPage';
@@ -53,7 +54,7 @@ const ProjectPage: React.FC = () => {
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                const res = await axios.get(`https://onco-lens-backend-hq5x.onrender.com/api/project/${id}`, { withCredentials: true });
+                const res = await axios.get(`${API_BASE_URL}/api/project/${id}`, { withCredentials: true });
                 setProject(res.data);
             } catch (error) {
                 console.error('Failed to fetch project', error);

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useUser } from '../../context/UserContext';
 import { io } from 'socket.io-client';
+import { API_BASE_URL } from '../config/api';
 
-const socket = io("https://onco-lens-backend-hq5x.onrender.com");
+const socket = io(API_BASE_URL);
 
 const Login: React.FC = () => {
 
@@ -49,7 +50,7 @@ const Login: React.FC = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-50 to-gray-100 px-4">
-            <ToastContainer
+            {/* <ToastContainer
                 position="top-center"
                 autoClose={2000}
                 hideProgressBar
@@ -57,7 +58,7 @@ const Login: React.FC = () => {
                 pauseOnHover
                 theme="light"
                 closeButton={false}
-            />
+            /> */}
 
             <motion.div
                 initial={{ opacity: 0, y: 30 }}
