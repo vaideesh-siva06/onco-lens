@@ -23,8 +23,9 @@ export const getIO = () => {
 export const initSocketServer = async (server: any) => {
     const allowedOrigins = [
         "https://onco-lens.vaideesh4.workers.dev",
-        "https://onco-lens-sxrc.onrender.com"
-    ];
+        "https://onco-lens-sxrc.onrender.com",
+        "http://localhost"
+      ];
     
     io = new Server(server, {
         cors: {

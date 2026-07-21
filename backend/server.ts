@@ -29,7 +29,8 @@ initSocketServer(server);
 
 const allowedOrigins = [
   "https://onco-lens.vaideesh4.workers.dev",
-  "https://onco-lens-sxrc.onrender.com"
+  "https://onco-lens-sxrc.onrender.com",
+  "http://localhost"
 ];
 
 app.use(cors({

@@ -1,4 +1,4 @@
-const DEFAULT_ORIGINS = ['https://onco-lens-sxrc.onrender.com', "https://onco-lens.vaideesh4.workers.dev"];
+const DEFAULT_ORIGINS = ['https://onco-lens-sxrc.onrender.com', "https://onco-lens.vaideesh4.workers.dev", "http://localhost"];
 
 export function getAllowedOrigins(): string[] {
   const fromEnv = process.env.CLIENT_ORIGIN;

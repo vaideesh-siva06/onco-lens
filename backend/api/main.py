@@ -17,7 +17,7 @@ app = FastAPI()
 # ✅ Correct CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost", "http://localhost:80", "https://onco-lens-sxrc.onrender.com", "https://onco-lens.vaideesh4.workers.dev/"],  # exact frontend URL
+    allow_origins=["http://localhost", "http://localhost:80", "https://onco-lens-sxrc.onrender.com", "https://onco-lens.vaideesh4.workers.dev"],  # exact frontend URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
