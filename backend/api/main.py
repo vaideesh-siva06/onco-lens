@@ -12,7 +12,7 @@ import requests
 # import tensorflow as tf
 # from tensorflow.keras.applications.resnet50 import preprocess_input
 
-import tensorflow.lite as tflite
+import tflite_runtime.interpreter as tflite
 
 
 app = FastAPI()
