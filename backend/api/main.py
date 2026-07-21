@@ -130,7 +130,7 @@ def get_model():
     print("Loading TFLite model...")
 
 
-    interpreter = tf.lite.Interpreter(
+    interpreter = tflite.Interpreter(
         model_path=MODEL_PATH
     )
 
