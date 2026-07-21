@@ -457,11 +457,11 @@ export const googleAuthCallback = async (req: any, res: any) => {
       if (redis) await invalidateProjectLists(redis);
 
       // Redirect to the **new project page**
-      return res.redirect(`http://localhost/project/${project._id}`);
+      return res.redirect(`${process.env.CLIENT_ORIGIN}/project/${project._id}`);
     }
 
     // If projectData doesn't exist → just Google auth, go to dashboard
-    return res.redirect('http://localhost/dashboard');
+    return res.redirect(`${process.env.CLIENT_ORIGIN}/dashboard`);
 
   } catch (err) {
     console.error('Error exchanging code for tokens or creating project:', err);
@@ -534,7 +534,7 @@ export const createProjectController = async (req: any, res: any) => {
         projectData: { name, description, focus, cancerTypes, status, teamEmails }
       }));
 
-      const redirectUrl = `http://localhost:8000/auth/google?state=${state}`; 
+      const redirectUrl = `${process.env.GOOGLE_REDIRECT_URI}/auth/google?state=${state}`; 
       return res.status(200).json({
         requiresGoogleAuth: true,
         redirect: redirectUrl,
