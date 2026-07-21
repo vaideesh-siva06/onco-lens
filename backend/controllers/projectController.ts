@@ -534,7 +534,7 @@ export const createProjectController = async (req: any, res: any) => {
         projectData: { name, description, focus, cancerTypes, status, teamEmails }
       }));
 
-      const redirectUrl = `${process.env.GOOGLE_REDIRECT_URI}/auth/google?state=${state}`; 
+      const redirectUrl = `${process.env.BACKEND_URL}/auth/google?state=${state}`; 
       return res.status(200).json({
         requiresGoogleAuth: true,
         redirect: redirectUrl,
