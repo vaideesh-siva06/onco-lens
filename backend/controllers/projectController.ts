@@ -461,7 +461,7 @@ export const googleAuthCallback = async (req: any, res: any) => {
     }
 
     // If projectData doesn't exist → just Google auth, go to dashboard
-    return res.redirect(`${process.env.CLIENT_ORIGIN}/dashboard`);
+    return res.redirect(`${process.env.CLIENT_ORIGIN}/`);
 
   } catch (err) {
     console.error('Error exchanging code for tokens or creating project:', err);
