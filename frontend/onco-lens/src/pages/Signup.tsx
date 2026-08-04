@@ -66,6 +66,13 @@ const Signup: React.FC = () => {
                     </p>
                 </div>
 
+                <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                    <span className="font-semibold">Heads up:</span> If this is your first
+                    signup in a while, it may take <strong>30–60 seconds</strong>. The backend
+                    is hosted on Render's free tier and may need a moment to start up.
+                    Thanks for your patience!
+                </div>
+
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Name */}
                     <div>
